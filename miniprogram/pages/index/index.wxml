@@ -1,0 +1,140 @@
+<view class="page-root">
+  <!-- 顶部导航胶囊（内联，不用组件——组件编译在本环境不稳定） -->
+  <view class="nb-capsule" style="padding-top:{{statusBarHeight}}px;">
+    <view class="nb-pill">
+      <!-- WebGL 流动烟雾背景（铺满胶囊，位于文字下方） -->
+      <canvas type="webgl" id="nb-flux" class="nb-flux"></canvas>
+      <view class="nb-title">MengYu</view>
+    </view>
+  </view>
+
+  <view class="bg-decor"></view>
+
+  <!-- 头部 -->
+  <view class="appbar">
+    <view class="header-row">
+      <view class="header-left">
+        <view class="greet">{{greeting}}，MengYu</view>
+        <view class="headline"><view class="hl"></view><text>想吃点什么？</text></view>
+        <view class="sub">共 {{dishTotal}} 道 · 今天也慢慢吃</view>
+      </view>
+      <view class="entry-btns">
+        <view class="entry" bindtap="goWishlist">
+          <view class="e-ico">🌟</view>
+          <view class="e-label">心愿单</view>
+        </view>
+        <view class="entry" bindtap="goOrders">
+          <view class="e-ico">📖</view>
+          <view class="e-label">订单</view>
+          <view wx:if="{{cartCount > 0}}" class="entry-badge {{badgeBounce ? 'bounce' : ''}}" wx:for="{{uiBadge}}" wx:key="*this">{{item}}</view>
+        </view>
+        <view wx:if="{{isAdmin}}" class="entry" bindtap="goAdmin">
+          <view class="e-ico">👑</view>
+          <view class="e-label">管家</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类胶囊（每个分类独立小胶囊 + 图标） -->
+  <view class="segment">
+    <view
+      wx:for="{{categories}}"
+      wx:key="*this"
+      class="seg {{item === activeCat ? 'on' : ''}}"
+      data-cat="{{item}}"
+      bindtap="onCat"
+    >
+      <view class="seg-ico seg-{{index}}"></view>
+      <text>{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 加载中 / 失败 / 空 -->
+  <view wx:if="{{loading}}" class="empty">
+    <view class="e">🍽️</view>
+    <view class="t">加载中…</view>
+  </view>
+  <view wx:elif="{{errorMsg}}" class="empty">
+    <view class="e">😞</view>
+    <view class="t" wx:for="{{uiError}}" wx:key="*this">{{item}}</view>
+  </view>
+  <view wx:elif="{{filtered.length === 0}}" class="empty">
+    <view class="e">🍽️</view>
+    <view class="t">这分类还没菜</view>
+  </view>
+
+  <!-- 内嵌分组列表（逐条淡入 stagger） -->
+  <view wx:else class="grouped {{listAnim}}">
+    <view
+      wx:for="{{filtered}}"
+      wx:key="_id"
+      wx:for-index="idx"
+      id="grow-{{idx}}"
+      class="grow"
+      style="animation-delay:{{idx * 35}}ms"
+      data-dish="{{item}}"
+      data-idx="{{idx}}"
+      bindtap="addToCart"
+    >
+      <view class="grow-emoji t{{idx % 6}}">{{item.emoji}}</view>
+      <view class="grow-info">
+        <view class="grow-name">{{item.name}}</view>
+        <view class="grow-desc">{{item.desc}}</view>
+      </view>
+      <view class="grow-right">
+        <view class="grow-price">¥{{item.price}}</view>
+        <view id="add-{{idx}}" class="add-btn" data-dish="{{item}}" data-idx="{{idx}}" catchtap="addToCart">＋</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部结算条 -->
+  <view wx:if="{{cartCount > 0}}" class="settle-bar" bindtap="openPay">
+    <view class="sb-left">
+      <view class="sb-count" wx:for="{{uiCartLine}}" wx:key="*this">{{item}}</view>
+      <view class="sb-total" wx:for="{{uiTotalLine}}" wx:key="*this">{{item}}</view>
+    </view>
+    <view class="sb-btn">去下单</view>
+  </view>
+
+  <!-- 支付抽屉 -->
+  <view wx:if="{{payShow}}" class="sheet-mask" bindtap="closePay" catchtouchmove="noop">
+    <view class="sheet" catchtap="noop">
+      <view class="grab"></view>
+      <view class="sheet-title">确认订单</view>
+
+      <view class="card pay-card">
+        <view wx:for="{{payList}}" wx:key="dishId" class="line">
+          <view>{{item.emoji}} {{item.name}} ×{{item.count}}</view>
+          <view>¥{{item.sum}}</view>
+        </view>
+        <view class="divider"></view>
+        <view class="line">
+          <view>合计</view>
+          <view class="line-price big" wx:for="{{uiSheetTotal}}" wx:key="*this">{{item}}</view>
+        </view>
+      </view>
+
+      <view class="card pay-card">
+        <view class="sec-title">附言</view>
+        <textarea
+          class="remark"
+          value="{{remark}}"
+          maxlength="60"
+          placeholder="少放辣、多加点香菜…"
+          placeholder-class="remark-ph"
+          bindinput="onRemark"
+        ></textarea>
+      </view>
+
+      <view class="btn-main {{submitting ? 'disabled' : ''}}" bindtap="confirmPay">确认支付</view>
+    </view>
+  </view>
+
+  <!-- 点单动画：白球从加号飞向购物车（fixed，JS 控制起点/终点抛物线） -->
+  <view wx:if="{{flyShow}}" class="fly-ball {{flyTrigger ? 'flying' : ''}}" style="left:{{flyStart.x}}px;top:{{flyStart.y}}px;--dx:{{flyDx}}px;--dy:{{flyDy}}px;">
+    <view class="fly-node">♥</view>
+  </view>
+
+</view>

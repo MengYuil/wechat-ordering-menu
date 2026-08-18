@@ -1,0 +1,9 @@
+{
+  "name": "updateOrderStatus",
+  "version": "1.0.0",
+  "description": "订单状态流转：接单/完成/取消/催单",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,6 @@
+<view class="navbar" style="padding-top:{{statusBarHeight}}px;">
+  <view class="nb-inner">
+    <view wx:if="{{showBack}}" class="nb-back" bindtap="onBack">‹</view>
+    <view class="nb-title">{{title}}</view>
+  </view>
+</view>

@@ -1,0 +1,29 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/orders/orders",
+    "pages/wishlist/wishlist",
+    "pages/mood/mood",
+    "pages/companion/companion",
+    "pages/admin/admin"
+  ],
+  "window": {
+    "navigationStyle": "custom",
+    "backgroundColor": "#F2F2F7",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "tabBar": {
+    "custom": true,
+    "color": "#8E8E93",
+    "selectedColor": "#007AFF",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "菜单" },
+      { "pagePath": "pages/mood/mood", "text": "心情" },
+      { "pagePath": "pages/companion/companion", "text": "陪伴" }
+    ]
+  }
+}

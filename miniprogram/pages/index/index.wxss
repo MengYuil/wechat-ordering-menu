@@ -1,0 +1,396 @@
+/* ===== 菜单页 —— Liquid Glass ===== */
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24rpx;
+}
+.header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 右侧入口（玻璃小按钮）*/
+.entry-btns {
+  display: flex;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+.entry {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 液态玻璃：跟底部 tabbar / 分类胶囊同一套 */
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16rpx) saturate(200%);
+  -webkit-backdrop-filter: blur(16rpx) saturate(200%);
+  border: 1rpx solid rgba(255, 255, 255, 0.7);
+  border-radius: 999rpx;
+  padding: 16rpx 26rpx;
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.8),
+    inset 0 1rpx 3rpx rgba(255, 255, 255, 0.7),
+    0 8rpx 24rpx rgba(0, 0, 0, 0.1),
+    0 0 20rpx rgba(10, 132, 255, 0.2);
+  transition: transform 160ms var(--ease-out);
+}
+.entry::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: inherit;
+  /* 斜向折射高光：跟 tabbar/segment 一致 */
+  background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 33%, rgba(255,255,255,0.7) 66%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+.entry:active {
+  transform: scale(0.96);
+}
+.e-ico {
+  font-size: 40rpx;
+  line-height: 1;
+}
+.e-label {
+  font-size: 20rpx;
+  color: var(--label-2);
+  margin-top: 6rpx;
+}
+.entry-badge {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  z-index: 5;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 700;
+  border-radius: 999rpx;
+  padding: 2rpx 12rpx;
+}
+.entry-badge.bounce {
+  animation: badge-bounce 0.4s ease;
+}
+@keyframes badge-bounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+/* —— 分段控件（玻璃槽 + 白色滑动胶囊）—— */
+.segment {
+  position: relative;
+  display: flex;
+  margin: 16rpx 32rpx 24rpx;
+  padding: 0;
+  gap: 12rpx;   /* 胶囊间距 */
+}
+
+.seg {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 14rpx 0;
+  font-size: 24rpx;
+  color: #48484A;
+  text-align: center;
+  /* 独立小玻璃胶囊 */
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1rpx solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.8),
+    inset 0 1rpx 3rpx rgba(255, 255, 255, 0.6),
+    0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  transition: background 0.25s ease, box-shadow 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  /* 图标在左，文字在右：横排 */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+
+.seg.on {
+  color: #1C1C1E;
+  font-weight: 600;
+  /* 选中：更实的白玻璃 + 蓝色光晕 + 微上浮 */
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1rpx 3rpx rgba(255, 255, 255, 0.85),
+    0 4rpx 14rpx rgba(0, 0, 0, 0.08),
+    0 0 18rpx rgba(10, 132, 255, 0.30);
+  transform: translateY(-2rpx);
+}
+
+/* —— 内嵌分组列表（液态玻璃块 + 发丝分行）—— */
+.grouped {
+  position: relative;
+  margin: 16rpx 32rpx 300rpx;
+  /* 高白度统一背景：不透出彩色光晕，保证整列表亮度一致 */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: saturate(150%) blur(22px);
+  -webkit-backdrop-filter: saturate(150%) blur(22px);
+  border-radius: 40rpx;
+  overflow: hidden;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.28), 0 16rpx 44rpx rgba(0, 0, 0, 0.35), 0 28rpx 60rpx var(--glow-color);
+}
+.grouped::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.22) 35%, rgba(255, 255, 255, 0.45) 65%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+.grow {
+  display: flex;
+  align-items: center;
+  padding: 26rpx 28rpx;
+  border-bottom: 1rpx solid var(--separator);
+}
+.grow:last-child {
+  border-bottom: none;
+}
+.grow:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.grouped.enter .grow {
+  animation: row-in 0.32s var(--ease-out) both;
+}
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(14rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 菜品贴片：彩色渐变圆（App 图标风，6 色轮转）*/
+.grow-emoji {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52rpx;
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 2rpx 4rpx rgba(255, 255, 255, 0.9),
+    0 8rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+.t0 { background: linear-gradient(135deg, #FFE8D6, #FFD0C2); }
+.t1 { background: linear-gradient(135deg, #D8F3E3, #BFE8D8); }
+.t2 { background: linear-gradient(135deg, #DCE9FF, #C7D9FF); }
+.t3 { background: linear-gradient(135deg, #F3E0FF, #E6CDFF); }
+.t4 { background: linear-gradient(135deg, #FFF3C9, #FFE7A0); }
+.t5 { background: linear-gradient(135deg, #DDF3FF, #C4E9FF); }
+
+.grow-info {
+  flex: 1;
+  margin-left: 24rpx;
+  min-width: 0;
+}
+.grow-name {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+.grow-desc {
+  font-size: 24rpx;
+  color: var(--label-2);
+  margin-top: 4rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grow-right {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+.grow-price {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--label);
+}
+
+/* 圆形加号按钮 */
+.add-btn {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  /* 纯净含水玻璃：几乎透明，只有边缘高光成形 */
+  background: rgba(255, 255, 255, 0.18);
+  border: 1rpx solid rgba(255, 255, 255, 0.95);
+  color: #1C1C1E;
+  font-size: 36rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow:
+    inset 0 0 0 1.5rpx rgba(255, 255, 255, 1),
+    inset 0 1rpx 4rpx rgba(255, 255, 255, 0.9),
+    0 4rpx 12rpx rgba(0, 0, 0, 0.06),
+    0 0 18rpx rgba(10, 132, 255, 0.4); /* 蓝色光晕：让玻璃圆显形 */
+  transition: transform 120ms var(--ease-out);
+}
+.add-btn:active {
+  transform: scale(0.92);
+}
+
+/* ===== 底部结算条（玻璃悬浮）===== */
+.settle-bar {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(144rpx + env(safe-area-inset-bottom));
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--glass-strong);
+  backdrop-filter: saturate(180%) blur(28px);
+  -webkit-backdrop-filter: saturate(180%) blur(28px);
+  border: 1rpx solid var(--glass-border);
+  border-radius: 999rpx;
+  padding: 20rpx 20rpx 20rpx 40rpx;
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.8),
+    inset 0 1rpx 3rpx rgba(255, 255, 255, 0.7),
+    0 16rpx 44rpx rgba(0, 0, 0, 0.08),
+    0 0 24rpx rgba(10, 132, 255, 0.22);
+}
+.sb-count {
+  font-size: 22rpx;
+  color: var(--label-2);
+}
+.sb-total {
+  font-size: 40rpx;
+  font-weight: 700;
+  margin-top: 2rpx;
+  color: var(--label);
+}
+.sb-btn {
+  background: linear-gradient(135deg, #0A84FF, #0071E3);
+  color: #FFFFFF;
+  border-radius: 999rpx;
+  padding: 22rpx 44rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.32);
+  transition: transform 120ms var(--ease-out);
+}
+.sb-btn:active {
+  transform: scale(0.96);
+}
+
+/* ===== 支付抽屉（玻璃）===== */
+.sheet-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+}
+.sheet {
+  width: 100%;
+  background: rgba(28, 28, 48, 0.92);
+  backdrop-filter: saturate(180%) blur(32px);
+  -webkit-backdrop-filter: saturate(180%) blur(32px);
+  border-radius: 48rpx 48rpx 0 0;
+  padding: 28rpx 32rpx calc(48rpx + env(safe-area-inset-bottom));
+  animation: slide-up 0.3s var(--ease-drawer);
+  max-height: 84vh;
+  overflow-y: auto;
+}
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.grab {
+  width: 72rpx;
+  height: 8rpx;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 999rpx;
+  margin: 0 auto 28rpx;
+}
+.sheet-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 28rpx;
+}
+.pay-card {
+  margin-bottom: 20rpx;
+}
+.pay-card:last-of-type {
+  margin-bottom: 28rpx;
+}
+/* ============================================================
+   分类图标（emoji：天然彩色，有照片感）
+   全部=🍽️ / 主食=🍚 / 甜品=🍰 / 饮品=🧋 / 夜宵=🌙
+   ============================================================ */
+.seg-ico {
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  line-height: 1;
+  transform: translateY(1rpx); /* emoji 视觉居中微调 */
+}
+.seg-ico.seg-0::before { content: '🍽️'; }
+.seg-ico.seg-1::before { content: '🍚'; }
+.seg-ico.seg-2::before { content: '🍰'; }
+.seg-ico.seg-3::before { content: '🧋'; }
+.seg-ico.seg-4::before { content: '🌙'; }
+
+/* ===== 加菜飞入购物车动画 ===== */
+.fly-ball {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  /* 起点坐标 = 加号中心，用负 margin 让白球居中于该点 */
+  margin-left: -28rpx;
+  margin-top: -28rpx;
+  /* 外层：水平位移（dx）—— 缓出 */
+  transition: transform 0.6s cubic-bezier(0.32, 0.6, 0.36, 1);
+  will-change: transform;
+}
+.fly-ball.flying {
+  transform: translate3d(var(--dx), 0, 0);
+}
+.fly-node {
+  /* 淡粉色爱心：文字内容 ♥，高对比清晰可见 */
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FF7EB6;
+  font-size: 56rpx;
+  line-height: 1;
+  text-shadow:
+    0 4rpx 12rpx rgba(255, 126, 182, 0.6),
+    0 0 2rpx #FFFFFF;
+  /* 内层：垂直位移（dy）+ 缩小 —— 抛物线感 */
+  transition: transform 0.6s cubic-bezier(0.55, 0, 0.84, 0.42);
+  will-change: transform;
+}
+.fly-ball.flying .fly-node {
+  transform: translate3d(0, var(--dy), 0) scale(0.4);
+}
+
+

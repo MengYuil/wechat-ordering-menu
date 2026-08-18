@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>情侣生活 · Google UI 原型</title>
+<style>
+  :root {
+    --bg: #FAF6F0;
+    --surface: #FFFFFF;
+    --surface-dim: #F4EDE5;
+    --primary: #E8614F;
+    --primary-deep: #D14E3C;
+    --primary-container: #FCE9E3;
+    --on-primary: #FFFFFF;
+    --text: #241E19;
+    --text-2: #8A817A;
+    --outline: #EAE2D9;
+    --success: #4CAF50;
+    --success-bg: #E7F4E8;
+    --warn: #F5A623;
+    --warn-bg: #FCF1DC;
+    --blue: #5B8DEF;
+    --blue-bg: #E8F0FE;
+    --radius-lg: 24px;
+    --radius: 18px;
+    --shadow: 0 4px 18px rgba(60, 40, 20, 0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #EDE6DC;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 0;
+  }
+  body::before {
+    content: "📱 情侣生活 · Google UI 原型预览";
+    font-size: 12px; color: #9a8f82; margin-bottom: 16px;
+    font-weight: 600; letter-spacing: .5px;
+  }
+  .phone {
+    width: 390px; height: 780px;
+    background:
+      radial-gradient(circle at 92% -8%, rgba(232,97,79,0.10), transparent 46%),
+      radial-gradient(circle at -12% 42%, rgba(245,166,35,0.09), transparent 42%),
+      radial-gradient(circle at 108% 78%, rgba(91,141,239,0.06), transparent 40%),
+      var(--bg);
+    border-radius: 40px; border: 9px solid #2b2b2b;
+    overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.28);
+  }
+  .notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 140px; height: 26px; background: #2b2b2b;
+    border-radius: 0 0 18px 18px; z-index: 50;
+  }
+
+  .appbar { padding: 46px 22px 8px; flex-shrink: 0; }
+  .appbar .headline { font-size: 26px; font-weight: 700; letter-spacing: -.3px; }
+  .appbar .sub { font-size: 13px; color: var(--text-2); margin-top: 5px; }
+
+  .screen { flex: 1; overflow: hidden; position: relative; }
+  .page { position: absolute; inset: 0; overflow-y: auto; display: none; padding-bottom: 96px; }
+  .page.active { display: block; }
+  .page::-webkit-scrollbar { display: none; }
+
+  /* 菜单页标题行 + 右侧入口按钮 */
+  .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .header-left { flex: 1; min-width: 0; }
+  .entry-btns { display: flex; gap: 8px; flex-shrink: 0; }
+  .entry {
+    display: flex; flex-direction: column; align-items: center;
+    background: var(--surface); border-radius: 12px; padding: 8px 13px;
+    box-shadow: var(--shadow); cursor: pointer; position: relative;
+  }
+  .e-ico { font-size: 18px; line-height: 1; }
+  .e-label { font-size: 10px; color: var(--text-2); margin-top: 3px; }
+  .entry-badge {
+    position: absolute; top: -5px; right: -4px;
+    background: var(--primary); color: #fff; font-size: 10px; font-weight: 700;
+    border-radius: 999px; padding: 1px 6px; display: none;
+  }
+  .entry-badge.show { display: block; }
+  .entry-badge.bounce { animation: bounce .4s ease; }
+
+  /* 菜单页固定头部 */
+  .menu-top {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(250,246,240,0.92);
+    backdrop-filter: blur(14px);
+  }
+
+  .chips {
+    display: flex; gap: 8px; padding: 12px 20px 14px;
+    overflow-x: auto; background: transparent;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    white-space: nowrap; padding: 8px 16px; border-radius: 999px;
+    background: var(--surface); color: var(--text-2); font-size: 13px;
+    border: 1px solid var(--outline); cursor: pointer;
+  }
+  .chip.on { background: var(--primary-container); color: var(--primary-deep); border-color: transparent; font-weight: 600; }
+
+  .dish-list { padding: 2px 20px 150px; }
+  .dish {
+    display: flex; align-items: center; background: var(--surface);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow);
+    padding: 14px; margin-bottom: 12px; cursor: pointer;
+    transition: transform .12s ease;
+  }
+  .dish:active { transform: scale(.97); }
+  .dish-emoji { width: 58px; height: 58px; border-radius: 16px; background: var(--surface-dim); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
+  .dish-info { flex: 1; margin-left: 14px; overflow: hidden; }
+  .dish-name { font-size: 16px; font-weight: 600; }
+  .dish-desc { font-size: 12px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  .dish-bottom { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .dish-price { font-size: 16px; font-weight: 700; color: var(--primary-deep); }
+  .add-btn { width: 30px; height: 30px; border-radius: 10px; background: #FF7EB6; color: #fff; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  /* 底部导航（无胶囊，简洁高亮） */
+  .bottomnav {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 66px;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--outline);
+    display: flex; z-index: 40; padding-bottom: 8px;
+  }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+  .nav-item .ico { font-size: 22px; line-height: 1; opacity: .55; transition: opacity .2s ease, transform .2s ease; }
+  .nav-item .lbl { font-size: 11px; margin-top: 3px; color: var(--text-2); transition: color .2s ease; }
+  .nav-item.on .ico { opacity: 1; transform: scale(1.12); }
+  .nav-item.on .lbl { color: var(--primary-deep); font-weight: 600; }
+  .nav-badge {
+    position: absolute; top: 2px; right: calc(50% - 24px);
+    background: var(--primary); color: #fff; font-size: 10px; font-weight: 700;
+    border-radius: 999px; padding: 1px 6px; display: none;
+    transition: transform .2s ease;
+  }
+  .nav-badge.show { display: block; }
+  .nav-badge.bounce { animation: bounce .4s ease; }
+  @keyframes bounce { 0% { transform: scale(1); } 40% { transform: scale(1.5); } 100% { transform: scale(1); } }
+
+  /* 飞入动画 */
+  .fly-outer {
+    position: fixed; z-index: 300; pointer-events: none;
+    transition: transform .85s linear;
+  }
+  .fly-inner {
+    font-size: 30px; line-height: 1;
+    transition: transform .85s cubic-bezier(.5, -1.1, .55, 1), opacity .85s ease;
+  }
+
+  /* 飘心动画 */
+  .heart {
+    position: fixed; z-index: 300; pointer-events: none; font-size: 24px;
+    transition: transform 1s cubic-bezier(.2, .6, .3, 1), opacity 1s ease;
+  }
+  .heart-big {
+    position: fixed; z-index: 301; pointer-events: none; font-size: 64px;
+    transform: translate(-50%, -50%) scale(0.2); opacity: 1;
+    transition: transform .7s cubic-bezier(.2,.7,.3,1), opacity .7s ease;
+  }
+
+  .card { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 16px; margin: 0 20px 12px; }
+  .sec-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+  .divider { height: 1px; background: var(--outline); margin: 10px 0; }
+  .line { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 14px; }
+  .line-price.big { font-size: 18px; font-weight: 700; color: var(--primary-deep); }
+  .btn-main {
+    background: var(--primary); color: #fff; border-radius: 999px;
+    text-align: center; padding: 14px 0; font-size: 15px; font-weight: 700;
+    box-shadow: 0 6px 18px rgba(232,97,79,0.3); cursor: pointer;
+  }
+  .empty { text-align: center; padding: 70px 0; color: var(--text-2); }
+  .empty .e { font-size: 50px; margin-bottom: 12px; }
+
+  .oi-item { display: flex; align-items: center; padding: 6px 0; }
+  .oi-emoji { width: 40px; height: 40px; border-radius: 12px; background: var(--surface-dim); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .oi-info { flex: 1; margin-left: 12px; }
+  .oi-name { font-size: 15px; font-weight: 600; }
+  .oi-price { font-size: 13px; color: var(--primary-deep); font-weight: 700; margin-top: 2px; }
+  .stepper { display: flex; align-items: center; gap: 12px; }
+  .step-btn { width: 26px; height: 26px; border-radius: 50%; background: var(--surface-dim); color: var(--text); font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .step-btn.add { background: var(--primary); color: #fff; }
+  .step-num { min-width: 22px; text-align: center; font-weight: 600; }
+
+  textarea.remark {
+    width: 100%; min-height: 60px; background: var(--surface-dim); border: none;
+    border-radius: 14px; padding: 12px; font-size: 14px; color: var(--text);
+    font-family: inherit; resize: none; outline: none; box-sizing: border-box; margin-top: 10px;
+  }
+
+  .order-card { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 16px; margin: 0 20px 12px; }
+  .order-head { display: flex; justify-content: space-between; align-items: center; }
+  .order-no { font-size: 12px; color: var(--text-2); }
+  .tag { display: inline-flex; padding: 3px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .order-items { margin-top: 10px; font-size: 15px; font-weight: 600; }
+  .order-remark { margin-top: 6px; font-size: 12px; color: var(--text-2); }
+  .order-foot { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .order-time { font-size: 12px; color: var(--text-2); }
+  .order-total { font-size: 17px; font-weight: 700; color: var(--primary-deep); }
+  .order-actions { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
+  .action-btn { background: var(--primary); color: #fff; border-radius: 999px; padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 3px 10px rgba(232,97,79,0.25); }
+  .action-btn.ghost { background: var(--surface); color: var(--primary-deep); border: 1px solid var(--outline); box-shadow: none; }
+
+  /* 心情 */
+  .mood-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 20px 12px; }
+  .mood {
+    background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow);
+    padding: 18px 0; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer; transition: transform .12s ease;
+  }
+  .mood:active { transform: scale(.95); }
+  .mood .mo { font-size: 40px; line-height: 1; }
+  .mood .ml { font-size: 13px; color: var(--text-2); }
+  .mood-item { display: flex; align-items: center; gap: 12px; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 14px; margin: 0 20px 12px; }
+  .mood-item .mo { font-size: 30px; }
+  .mood-item .mi-info { flex: 1; }
+  .mood-item .mi-label { font-size: 15px; font-weight: 600; }
+  .mood-item .mi-time { font-size: 11px; color: var(--text-2); margin-top: 3px; }
+
+  /* 陪伴 */
+  .companion-big {
+    margin: 4px 20px 12px; background: var(--surface); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow); padding: 28px 16px; text-align: center; cursor: pointer;
+    transition: transform .12s ease;
+  }
+  .companion-big:active { transform: scale(.96); }
+  .companion-big .cb-emoji { font-size: 56px; line-height: 1; }
+  .companion-big .cb-label { font-size: 16px; font-weight: 700; margin-top: 12px; }
+  .companion-big .cb-sub { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+  .companion-row { display: flex; gap: 12px; margin: 0 20px 12px; }
+  .companion-row .c-half { flex: 1; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 18px 0; text-align: center; cursor: pointer; }
+  .companion-row .c-half .ch-emoji { font-size: 34px; }
+  .companion-row .c-half .ch-label { font-size: 14px; font-weight: 600; margin-top: 8px; }
+
+  /* 心愿单 */
+  .wish-input { display: flex; gap: 8px; align-items: center; margin: 0 20px 12px; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 10px 14px; }
+  .wish-input input { flex: 1; border: none; outline: none; font-size: 15px; color: var(--text); background: transparent; }
+  .wish-item { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 14px; margin: 0 20px 12px; }
+  .wish-content { font-size: 15px; font-weight: 600; }
+  .wish-content.done { color: var(--text-2); text-decoration: line-through; }
+  .wish-meta { margin-top: 6px; font-size: 11px; color: var(--text-2); display: flex; gap: 8px; align-items: center; }
+  .wish-status { padding: 2px 10px; border-radius: 999px; background: var(--warn-bg); color: var(--warn); font-weight: 600; }
+  .wish-status.done { background: var(--success-bg); color: var(--success); }
+  .wish-del { color: var(--text-2); cursor: pointer; padding: 8px; }
+
+  /* 一键下单结算条 */
+  .settle-bar {
+    position: absolute; left: 16px; right: 16px; bottom: 74px; z-index: 45;
+    display: none; align-items: center; justify-content: space-between;
+    background: #FFFFFF;
+    color: var(--text); border-radius: 999px; padding: 12px 16px 12px 22px;
+    box-shadow: 0 10px 28px rgba(60,45,35,0.14); border: 1px solid var(--outline);
+    cursor: pointer;
+  }
+  .sb-count { font-size: 12px; color: var(--text-2); }
+  .sb-total { font-size: 21px; font-weight: 700; margin-top: 1px; color: var(--primary-deep); }
+  .sb-btn { background: linear-gradient(135deg, #FF9DBB, #FF6F91); color: #fff; border-radius: 999px; padding: 12px 22px; font-size: 15px; font-weight: 700; box-shadow: 0 4px 12px rgba(255,111,145,0.35); }
+
+  /* 支付弹窗 */
+  .sheet-mask {
+    position: absolute; inset: 0; background: rgba(30,20,15,0.45);
+    z-index: 60; display: none; align-items: flex-end;
+  }
+  .sheet-mask.show { display: flex; }
+  .sheet {
+    width: 100%; background: var(--bg); border-radius: 28px 28px 0 0;
+    padding: 18px 20px 30px; animation: slideUp .25s ease;
+    max-height: 82%; overflow-y: auto;
+  }
+  .sheet::-webkit-scrollbar { display: none; }
+  .sheet-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 16px; }
+  .sheet .grab { width: 40px; height: 4px; background: var(--outline); border-radius: 999px; margin: 0 auto 14px; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  .toast {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(40,30,20,0.88); color: #fff; padding: 11px 20px;
+    border-radius: 999px; font-size: 13px; z-index: 100; display: none; white-space: nowrap;
+  }
+  .toast.show { display: block; animation: pop 1.5s forwards; }
+  @keyframes pop { 0% { opacity: 0; } 12% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen" id="screen">
+
+      <!-- 菜单 -->
+      <section class="page active" id="page-index">
+        <div class="menu-top">
+          <div class="appbar">
+            <div class="header-row">
+              <div class="header-left">
+                <div class="headline" style="font-size:21px">宝贝，想吃点什么？</div>
+                <div class="sub">菜单已备好，随便点 ❤</div>
+              </div>
+              <div class="entry-btns">
+                <div class="entry" onclick="showPage('page-wishlist')"><span class="e-ico">🌟</span><span class="e-label">心愿单</span></div>
+                <div class="entry" id="orderEntry" onclick="showPage('page-orders')"><span class="e-ico">📖</span><span class="e-label">订单</span><span class="entry-badge" id="entryBadge">0</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="chips" id="chipWrap"></div>
+        </div>
+        <div class="dish-list" id="dishList"></div>
+      </section>
+
+      <!-- 订单 -->
+      <section class="page" id="page-orders">
+        <div class="appbar">
+          <div class="headline">订单</div>
+          <div class="sub" id="ordersSub">点餐记录都在这里</div>
+        </div>
+        <div id="currentOrderWrap"></div>
+        <div id="orderList"></div>
+      </section>
+
+      <!-- 心情 -->
+      <section class="page" id="page-mood">
+        <div class="appbar">
+          <div class="headline">今天心情怎么样？</div>
+          <div class="sub">点一下记录此刻的心情</div>
+        </div>
+        <div class="mood-grid" id="moodGrid"></div>
+        <div id="moodList"></div>
+      </section>
+
+      <!-- 陪伴 -->
+      <section class="page" id="page-companion">
+        <div class="appbar">
+          <div class="headline">陪伴</div>
+          <div class="sub">不管多远，我都在</div>
+        </div>
+        <div class="companion-big" id="missBtn">
+          <div class="cb-emoji">💗</div>
+          <div class="cb-label">想你了</div>
+          <div class="cb-sub">点一下，把想念发过去</div>
+        </div>
+        <div class="companion-row">
+          <div class="c-half" id="morningBtn"><div class="ch-emoji">☀️</div><div class="ch-label">早安</div></div>
+          <div class="c-half" id="nightBtn"><div class="ch-emoji">🌙</div><div class="ch-label">晚安</div></div>
+        </div>
+        <div id="companionList"></div>
+      </section>
+
+      <!-- 心愿单 -->
+      <section class="page" id="page-wishlist">
+        <div class="appbar"><div class="headline">心愿单</div></div>
+        <div class="wish-input">
+          <input id="wishInput" maxlength="40" placeholder="想吃什么 / 想要什么…" />
+          <div class="add-btn" style="width:64px;height:32px;border-radius:999px;font-size:13px" onclick="addWish()">记录</div>
+        </div>
+        <div id="wishList"></div>
+      </section>
+
+      <!-- 一键下单结算条 -->
+      <div class="settle-bar" id="settleBar" onclick="openPay()">
+        <div>
+          <div class="sb-count" id="sbCount">共 0 道</div>
+          <div class="sb-total" id="sbTotal">¥0</div>
+        </div>
+        <div class="sb-btn">下单咯 💌</div>
+      </div>
+
+      <!-- 底部导航 -->
+      <div class="bottomnav">
+        <div class="nav-item on" data-p="page-index" onclick="showPage('page-index')"><span class="ico">🍽️</span><span class="lbl">菜单</span></div>
+        <div class="nav-item" data-p="page-mood" onclick="showPage('page-mood')"><span class="ico">💛</span><span class="lbl">心情</span></div>
+        <div class="nav-item" data-p="page-companion" onclick="showPage('page-companion')"><span class="ico">🫂</span><span class="lbl">陪伴</span></div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <!-- 支付弹窗 -->
+    <div class="sheet-mask" id="payMask" onclick="closePay()">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="grab"></div>
+        <div class="sheet-title">确认订单</div>
+        <div class="card" style="margin:0 0 12px">
+          <div id="payList"></div>
+          <div class="divider"></div>
+          <div class="line"><span>合计</span><span class="line-price big" id="payTotal">¥0</span></div>
+        </div>
+        <div class="card" style="margin:0 0 16px">
+          <div class="sec-title">附言</div>
+          <textarea class="remark" id="payRemark" maxlength="60" placeholder="少放辣、多加点香菜…" style="margin-top:0"></textarea>
+        </div>
+        <div class="btn-main" onclick="confirmPay()">确认支付</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const DISHES = [
+  { id: 1,  name: '番茄炒蛋面', emoji: '🍜', price: 18, category: '主食', desc: '酸甜开胃，暖胃又暖心' },
+  { id: 2,  name: '可乐鸡翅饭', emoji: '🍗', price: 22, category: '主食', desc: '甜甜的可乐裹着嫩鸡翅' },
+  { id: 3,  name: '红烧肉配饭', emoji: '🥘', price: 28, category: '主食', desc: '肥而不腻，入口即化' },
+  { id: 4,  name: '虾仁滑蛋饭', emoji: '🍤', price: 26, category: '主食', desc: '滑嫩鸡蛋遇上弹弹虾仁' },
+  { id: 5,  name: '草莓小蛋糕', emoji: '🍰', price: 15, category: '甜品', desc: '软fufu，甜到心里' },
+  { id: 6,  name: '红豆双皮奶', emoji: '🥛', price: 12, category: '甜品', desc: '奶香浓郁，红豆绵密' },
+  { id: 7,  name: '蜂蜜柚子茶', emoji: '🍯', price: 10, category: '饮品', desc: '清新润喉，暖暖的' },
+  { id: 8,  name: '珍珠奶茶', emoji: '🧋', price: 12, category: '饮品', desc: '波霸多多，快乐加倍' },
+  { id: 9,  name: '热巧克力', emoji: '☕', price: 14, category: '饮品', desc: '浓郁丝滑，治愈系' },
+  { id: 10, name: '香辣烤串', emoji: '🍢', price: 20, category: '夜宵', desc: '滋滋冒油，小心烫嘴' },
+  { id: 11, name: '蒜蓉小龙虾', emoji: '🦞', price: 45, category: '夜宵', desc: '红彤彤的一大盘' },
+  { id: 12, name: '黄金炸鸡', emoji: '🍗', price: 25, category: '夜宵', desc: '外酥里嫩，一口爆汁' }
+]
+
+const MOODS = [
+  { emoji: '😄', label: '开心' },
+  { emoji: '😌', label: '平静' },
+  { emoji: '🥰', label: '想你' },
+  { emoji: '😢', label: '难过' },
+  { emoji: '😠', label: '生气' },
+  { emoji: '😴', label: '疲惫' }
+]
+
+let currentOrder = {}   // id -> { dish, count }
+let activeCat = '全部'
+let wishlist = []
+let orders = []
+let moods = []
+let companions = []
+
+const $ = id => document.getElementById(id)
+
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.remove('show'); void t.offsetWidth; t.classList.add('show')
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  $(name).classList.add('active')
+  document.querySelectorAll('.nav-item').forEach(t => t.classList.toggle('on', t.dataset.p === name))
+  if (name === 'page-orders') renderOrders()
+  if (name === 'page-mood') renderMoods()
+  if (name === 'page-companion') renderCompanion()
+  if (name === 'page-wishlist') renderWish()
+  refreshNavBadge()
+  refreshSettleBar()
+}
+
+function renderChips() {
+  const cats = ['全部', ...new Set(DISHES.map(d => d.category))]
+  $('chipWrap').innerHTML = cats.map(c => `<div class="chip ${c === activeCat ? 'on' : ''}" onclick="setCat('${c}')">${c}</div>`).join('')
+}
+function setCat(c) { activeCat = c; renderChips(); renderDishes() }
+
+function renderDishes() {
+  const list = activeCat === '全部' ? DISHES : DISHES.filter(d => d.category === activeCat)
+  $('dishList').innerHTML = list.length ? list.map(d => `
+    <div class="dish" onclick="addToOrder(${d.id}, event)">
+      <div class="dish-emoji">${d.emoji}</div>
+      <div class="dish-info">
+        <div class="dish-name">${d.name}</div>
+        <div class="dish-desc">${d.desc}</div>
+        <div class="dish-bottom"><span class="dish-price">¥${d.price}</span><span class="add-btn">＋</span></div>
+      </div>
+    </div>`).join('') : '<div class="empty"><div class="e">🍽️</div>这个分类还没有菜</div>'
+}
+
+function orderCount() { return Object.values(currentOrder).reduce((s, i) => s + i.count, 0) }
+function orderTotal() { return Object.values(currentOrder).reduce((s, i) => s + i.count * i.dish.price, 0) }
+function orderList() { return Object.values(currentOrder) }
+
+function refreshNavBadge() {
+  const n = orderCount()
+  $('entryBadge').textContent = n
+  $('entryBadge').classList.toggle('show', n > 0)
+}
+
+function bounceBadge() {
+  const b = $('entryBadge')
+  b.classList.remove('bounce'); void b.offsetWidth; b.classList.add('bounce')
+}
+
+// 点菜 → 飞入订单
+function addToOrder(id, ev) {
+  const dish = DISHES.find(d => d.id === id)
+  if (currentOrder[id]) currentOrder[id].count++; else currentOrder[id] = { dish, count: 1 }
+  refreshNavBadge(); bounceBadge(); refreshSettleBar()
+  if (ev) flyToOrder(dish.emoji, ev.clientX, ev.clientY)
+  toast('已加进订单 🍽️')
+}
+
+function flyToOrder(emoji, fromX, fromY) {
+  const target = document.getElementById('settleBar')
+  const r = target.getBoundingClientRect()
+  const tx = r.left + r.width / 2
+  const ty = r.top + r.height / 2 - 20
+
+  const outer = document.createElement('div')
+  outer.className = 'fly-outer'
+  outer.style.left = (fromX - 15) + 'px'
+  outer.style.top = (fromY - 15) + 'px'
+  const inner = document.createElement('div')
+  inner.className = 'fly-inner'
+  inner.textContent = emoji
+  outer.appendChild(inner)
+  document.body.appendChild(outer)
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      outer.style.transform = `translateX(${tx - fromX + 15}px)`
+      inner.style.transform = `translateY(${ty - fromY + 15}px) scale(0.35)`
+      inner.style.opacity = '0.4'
+    })
+  })
+  setTimeout(() => outer.remove(), 900)
+}
+
+function renderOrders() {
+  const list = orderList()
+  const hasCurrent = list.length > 0
+  $('currentOrderWrap').innerHTML = hasCurrent ? `
+    <div class="card">
+      <div class="sec-title">今晚这单 🍽️</div>
+      ${list.map(i => `
+        <div class="oi-item">
+          <div class="oi-emoji">${i.dish.emoji}</div>
+          <div class="oi-info"><div class="oi-name">${i.dish.name}</div><div class="oi-price">¥${i.dish.price}</div></div>
+          <div class="stepper">
+            <div class="step-btn" onclick="decOrder(${i.dish.id})">−</div>
+            <div class="step-num">${i.count}</div>
+            <div class="step-btn add" onclick="incOrder(${i.dish.id})">＋</div>
+          </div>
+        </div>`).join('')}
+      <div class="divider"></div>
+      <div class="line"><span>合计</span><span class="line-price big">¥${orderTotal()}</span></div>
+      <textarea class="remark" id="remark" maxlength="60" placeholder="附言：少放辣、多加点香菜…"></textarea>
+      <div class="btn-main" style="margin-top:12px" onclick="submitOrder()">下单 💌</div>
+    </div>` : ''
+
+  $('orderList').innerHTML = orders.length ? orders.map((o, idx) => {
+    const st = STATUS[o.status]
+    const acts = o.status === 'pending' ? `<div class="action-btn ghost" onclick="cancelOrder(${idx})">取消</div>`
+      : o.status === 'cooking' ? `<div class="action-btn" onclick="pokeOrder(${idx})">催单 💗</div>` : ''
+    return `<div class="order-card">
+      <div class="order-head"><span class="order-no">单号 ${o.no}</span><span class="tag" style="color:${st.color};background:${st.bg}">${st.text}</span></div>
+      <div class="order-items">${o.summary}</div>
+      ${o.remark ? `<div class="order-remark">💬 ${o.remark}</div>` : ''}
+      <div class="order-foot"><span class="order-time">${o.time}</span><span class="order-total">¥${o.total}</span></div>
+      ${acts ? `<div class="order-actions">${acts}</div>` : ''}
+    </div>`
+  }).join('') : (hasCurrent ? '' : '<div class="empty"><div class="e">📭</div>还没有订单，去菜单点几道吧</div>')
+
+  $('ordersSub').textContent = hasCurrent ? `已点 ${orderCount()} 道，还没下单` : (orders.length ? `${orders.length} 条历史订单` : '点餐记录都在这里')
+}
+
+function incOrder(id) { currentOrder[id].count++; renderOrders(); refreshNavBadge() }
+function decOrder(id) { if (--currentOrder[id].count <= 0) delete currentOrder[id]; renderOrders(); refreshNavBadge() }
+
+function submitOrder() {
+  if (!orderCount()) { toast('订单是空的'); return }
+  const remark = ($('remark') || {}).value || ''
+  orders.unshift({
+    no: 'D' + Date.now().toString(36).toUpperCase().slice(-6),
+    summary: orderList().map(i => i.dish.name).join('、').slice(0, 30),
+    remark, total: orderTotal(), status: 'pending', time: '刚刚'
+  })
+  currentOrder = {}
+  renderOrders(); refreshNavBadge(); refreshSettleBar()
+  toast('下单成功！等接单吧 💕')
+}
+
+// 一键下单（支付）
+function refreshSettleBar() {
+  const n = orderCount()
+  const bar = $('settleBar')
+  const visible = n > 0 && $('page-index').classList.contains('active')
+  bar.style.display = visible ? 'flex' : 'none'
+  $('sbCount').textContent = '共 ' + n + ' 道'
+  $('sbTotal').textContent = '¥' + orderTotal()
+}
+
+function openPay() {
+  if (!orderCount()) { toast('订单是空的'); return }
+  const list = orderList()
+  $('payList').innerHTML = list.map(i => `<div class="line"><span>${i.dish.emoji} ${i.dish.name} ×${i.count}</span><span>¥${i.dish.price * i.count}</span></div>`).join('')
+  $('payTotal').textContent = '¥' + orderTotal()
+  $('payMask').classList.add('show')
+}
+
+function closePay() { $('payMask').classList.remove('show') }
+
+function confirmPay() {
+  const remark = ($('payRemark') || {}).value || ''
+  orders.unshift({
+    no: 'D' + Date.now().toString(36).toUpperCase().slice(-6),
+    summary: orderList().map(i => i.dish.name).join('、').slice(0, 30),
+    remark, total: orderTotal(), status: 'pending', time: '刚刚'
+  })
+  currentOrder = {}
+  $('payRemark').value = ''
+  closePay()
+  renderOrders(); refreshNavBadge(); refreshSettleBar()
+  toast('支付成功！等接单吧 💕')
+}
+
+const STATUS = {
+  pending:   { text: '待接单', color: '#F5A623', bg: '#FCF1DC' },
+  cooking:   { text: '制作中', color: '#E8614F', bg: '#FCE9E3' },
+  done:      { text: '已完成', color: '#4CAF50', bg: '#E7F4E8' },
+  cancelled: { text: '已取消', color: '#8A817A', bg: '#F0EAE2' }
+}
+
+function cancelOrder(idx) { orders[idx].status = 'cancelled'; renderOrders(); toast('订单已取消') }
+function pokeOrder(idx) { orders[idx].status = 'cooking'; renderOrders(); toast('已经催单啦 💗') }
+
+// 心情
+function renderMoods() {
+  $('moodGrid').innerHTML = MOODS.map(m => `
+    <div class="mood" onclick="addMood('${m.emoji}','${m.label}')">
+      <div class="mo">${m.emoji}</div><div class="ml">${m.label}</div>
+    </div>`).join('')
+  $('moodList').innerHTML = moods.length ? moods.map(m => `
+    <div class="mood-item">
+      <div class="mo">${m.emoji}</div>
+      <div class="mi-info"><div class="mi-label">${m.label}</div><div class="mi-time">${m.time}</div></div>
+    </div>`).join('') : '<div class="empty"><div class="e">💛</div>还没有记录，点一个心情吧</div>'
+}
+
+function addMood(emoji, label) {
+  moods.unshift({ emoji, label, time: '刚刚' })
+  renderMoods(); toast('已记录 ' + emoji)
+}
+
+// 陪伴
+function renderCompanion() {
+  $('companionList').innerHTML = companions.length ? companions.map(c => `
+    <div class="mood-item">
+      <div class="mo">${c.emoji}</div>
+      <div class="mi-info"><div class="mi-label">${c.label}</div><div class="mi-time">${c.time}</div></div>
+    </div>`).join('') : '<div class="empty"><div class="e">🫂</div>今天还没有互动，点一下上面的大按钮吧</div>'
+}
+
+function burstHearts(x, y) {
+  const hearts = ['💗','❤️','💕','💖','💓','🩷','💘','💝']
+  for (let i = 0; i < 16; i++) {
+    const h = document.createElement('div')
+    h.className = 'heart'
+    h.textContent = hearts[Math.floor(Math.random() * hearts.length)]
+    h.style.fontSize = (14 + Math.random() * 26) + 'px'
+    h.style.left = x + 'px'
+    h.style.top = y + 'px'
+    h.style.transitionDuration = (0.8 + Math.random() * 0.5) + 's'
+    document.body.appendChild(h)
+    const angle = (Math.random() - 0.5) * Math.PI
+    const dist = 70 + Math.random() * 170
+    const dx = Math.sin(angle) * dist
+    const dy = -(50 + Math.random() * 160)
+    const rot = (Math.random() - 0.5) * 140
+    const sc = 0.4 + Math.random() * 0.9
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        h.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(${sc})`
+        h.style.opacity = '0'
+      })
+    })
+    setTimeout(() => h.remove(), 1400)
+  }
+  const big = document.createElement('div')
+  big.className = 'heart-big'
+  big.textContent = '💗'
+  big.style.left = x + 'px'
+  big.style.top = y + 'px'
+  document.body.appendChild(big)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      big.style.transform = 'translate(-50%, -50%) scale(2.2)'
+      big.style.opacity = '0'
+    })
+  })
+  setTimeout(() => big.remove(), 800)
+}
+
+function addCompanion(emoji, label, ev) {
+  companions.unshift({ emoji, label, time: '刚刚' })
+  renderCompanion()
+  if (ev) burstHearts(ev.clientX, ev.clientY)
+  toast(label + ' ' + emoji)
+}
+
+// 心愿单
+function renderWish() {
+  $('wishList').innerHTML = wishlist.length ? wishlist.map((w, i) => `
+    <div class="wish-item">
+      <div>
+        <div class="wish-content ${w.done ? 'done' : ''}">${w.done ? '✨' : '🌟'} ${w.content}</div>
+        <div class="wish-meta"><span>${w.time}</span><span class="wish-status ${w.done ? 'done' : ''}">${w.done ? '已实现' : '想吃中'}</span></div>
+      </div>
+      <span class="wish-del" onclick="delWish(${i})">✕</span>
+    </div>`).join('') : '<div class="empty"><div class="e">🌙</div>还没有心愿，写下第一个吧</div>'
+}
+
+function addWish() {
+  const v = $('wishInput').value.trim()
+  if (!v) { toast('写下你的小愿望吧'); return }
+  wishlist.unshift({ content: v, done: false, time: '刚刚' })
+  $('wishInput').value = ''; renderWish(); toast('已记下 ✨')
+}
+function delWish(i) { wishlist.splice(i, 1); renderWish() }
+
+// 绑定陪伴按钮
+$('missBtn').addEventListener('click', (e) => addCompanion('💗', '想你了', e))
+$('morningBtn').addEventListener('click', (e) => addCompanion('☀️', '早安', e))
+$('nightBtn').addEventListener('click', (e) => addCompanion('🌙', '晚安', e))
+
+renderChips(); renderDishes(); renderOrders(); renderMoods(); renderCompanion(); renderWish(); refreshNavBadge(); refreshSettleBar()
+</script>
+</body>
+</html>

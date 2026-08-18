@@ -1,0 +1,119 @@
+/* ===== 管家面板 —— Apple 设计 =====
+   通用 card / sec-title / empty 来自 app.wxss */
+
+.page-root {
+  min-height: 100vh;
+  padding-bottom: 80rpx;
+}
+
+/* 顶部大标题 */
+.appbar {
+  padding: 32rpx 32rpx 20rpx;
+}
+
+.headline {
+  font-size: 64rpx;
+  font-weight: 700;
+  letter-spacing: -1rpx;
+  line-height: 1.15;
+}
+
+.sub {
+  font-size: 26rpx;
+  color: var(--label-2);
+  margin-top: 8rpx;
+}
+
+/* —— 订单卡片 —— */
+.order-card {
+  margin: 0 32rpx 20rpx;
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-no {
+  font-size: 24rpx;
+  color: var(--label-2);
+}
+
+.order-items {
+  margin-top: 20rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.order-remark {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: var(--label-2);
+}
+
+.order-foot {
+  margin-top: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-time {
+  font-size: 24rpx;
+  color: var(--label-2);
+}
+
+.order-total {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--label);
+}
+
+/* 操作按钮：接单 accent 实心 / 完成绿实心 */
+.order-actions {
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-radius: 999rpx;
+  padding: 16rpx 48rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  box-shadow: var(--shadow-btn);
+}
+
+.action-btn.done-btn {
+  background: var(--green);
+  box-shadow: 0 6rpx 20rpx rgba(52, 199, 89, 0.26);
+}
+
+/* 无权限页返回按钮 */
+.back-btn {
+  margin: 32rpx auto 0;
+  width: 240rpx;
+  background: var(--accent);
+  color: #FFFFFF;
+  border-radius: 999rpx;
+  padding: 18rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  box-shadow: var(--shadow-btn);
+}
+
+/* 加载 / 底部留白 */
+.loading {
+  text-align: center;
+  padding: 60rpx 0;
+  color: var(--label-2);
+  font-size: 25rpx;
+}
+
+.footer-space {
+  height: 140rpx;
+}

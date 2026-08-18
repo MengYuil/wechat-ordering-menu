@@ -1,0 +1,29 @@
+<view
+  class="tabbar"
+  wx:if="{{!hidden}}"
+  catchtouchstart="onTouchStart"
+  catchtouchmove="onTouchMove"
+  bindtouchend="onTouchEnd"
+  bindtouchcancel="onTouchEnd"
+>
+  <!-- 粉紫自然烟雾（装饰层，不挡触摸） -->
+  <view class="tab-smoke">
+    <view class="smoke n1"></view>
+    <view class="smoke n2"></view>
+    <view class="smoke n3"></view>
+  </view>
+  <!-- 滑动玻璃胶囊：位置由 capStyle 控制；拖动时跟手（transition 关闭），松手吸附滑动 -->
+  <view class="tab-cap {{dragging ? 'dragging' : ''}}" style="{{capStyle}}"></view>
+
+  <view
+    wx:for="{{list}}"
+    wx:key="pagePath"
+    class="tab {{selected === index ? 'on' : ''}} {{preview === index ? 'pressing' : ''}}"
+    data-index="{{index}}"
+    data-path="{{item.pagePath}}"
+    bindtap="switchTab"
+  >
+    <view class="ico {{item.cls}}"></view>
+    <view class="lbl">{{item.text}}</view>
+  </view>
+</view>

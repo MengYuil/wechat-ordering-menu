@@ -1,0 +1,9 @@
+{
+  "name": "wishlist",
+  "version": "1.0.0",
+  "description": "心愿单：添加/列表/删除/标记已实现",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

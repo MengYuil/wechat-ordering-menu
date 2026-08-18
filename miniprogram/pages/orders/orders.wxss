@@ -1,0 +1,204 @@
+/* ===== 订单页 —— Apple 设计 =====
+   通用 card / sec-title / divider / line / line-price / btn-main / remark / empty
+   均来自 app.wxss */
+
+.page-root {
+  min-height: 100vh;
+  padding-bottom: 80rpx;
+}
+
+/* 顶部大标题 */
+.appbar {
+  padding: 32rpx 32rpx 20rpx;
+}
+
+.headline {
+  font-size: 64rpx;
+  font-weight: 700;
+  letter-spacing: -1rpx;
+  line-height: 1.15;
+}
+
+.sub {
+  font-size: 26rpx;
+  color: var(--label-2);
+  margin-top: 8rpx;
+}
+
+/* —— 今晚这单 —— */
+.current-card {
+  margin: 0 32rpx 24rpx;
+}
+
+.oi-item {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+
+.oi-emoji {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  flex-shrink: 0;
+}
+
+.oi-info {
+  flex: 1;
+  margin-left: 20rpx;
+  min-width: 0;
+}
+
+.oi-name {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.oi-price {
+  font-size: 26rpx;
+  color: var(--label-2);
+  font-weight: 600;
+  margin-top: 4rpx;
+}
+
+/* 数量加减器 */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  flex-shrink: 0;
+}
+
+.step-btn {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: var(--glass);
+  color: var(--label);
+  font-size: 30rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 120ms var(--ease-out);
+}
+.step-btn:active {
+  transform: scale(0.9);
+}
+
+.step-btn.add {
+  background: var(--accent);
+  color: #FFFFFF;
+}
+
+.step-num {
+  min-width: 44rpx;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* 附言 + 下单按钮 */
+.remark {
+  margin-top: 20rpx;
+}
+
+.submit-btn {
+  margin-top: 24rpx;
+}
+
+/* —— 历史订单 —— */
+.hist-title {
+  margin-top: 8rpx;
+}
+
+.order-card {
+  margin: 0 32rpx 20rpx;
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-no {
+  font-size: 24rpx;
+  color: var(--label-2);
+}
+
+.order-items {
+  margin-top: 20rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.order-remark {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: var(--label-2);
+}
+
+.order-foot {
+  margin-top: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-time {
+  font-size: 24rpx;
+  color: var(--label-2);
+}
+
+.order-total {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--label);
+}
+
+/* 操作按钮：催单实心 accent / 取消描边幽灵 */
+.order-actions {
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+}
+
+.action-btn {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-radius: 999rpx;
+  padding: 16rpx 40rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  transition: transform 120ms var(--ease-out);
+}
+.action-btn:active {
+  transform: scale(0.94);
+}
+
+.action-btn.ghost {
+  background: var(--glass);
+  backdrop-filter: saturate(150%) blur(22px);
+  -webkit-backdrop-filter: saturate(150%) blur(22px);
+  border: 1rpx solid var(--glass-border);
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.28), 0 16rpx 44rpx rgba(0, 0, 0, 0.35), 0 28rpx 60rpx var(--glow-color);
+}
+
+/* 加载 / 底部留白 */
+.loading {
+  text-align: center;
+  padding: 60rpx 0;
+  color: var(--label-2);
+  font-size: 25rpx;
+}
+
+.footer-space {
+  height: 140rpx;
+}

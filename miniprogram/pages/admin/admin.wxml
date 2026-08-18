@@ -1,0 +1,65 @@
+<view class="page-root">
+  <!-- 顶部导航胶囊（内联，不用组件——组件编译在本环境不稳定） -->
+  <view class="nb-capsule" style="padding-top:{{statusBarHeight}}px;">
+    <view class="nb-pill">
+      <!-- WebGL 流动烟雾背景 -->
+      <canvas type="webgl" id="nb-flux" class="nb-flux"></canvas>
+      <view wx:if="{{showBack}}" class="nb-back" bindtap="goBack">‹</view>
+      <view class="nb-title">管家</view>
+    </view>
+  </view>
+
+  <view class="bg-decor"></view>
+  <!-- 身份验证中 -->
+  <view wx:if="{{checking}}" class="loading">身份验证中…</view>
+
+  <!-- 无权限 -->
+  <view wx:elif="{{!isAdmin}}" class="empty">
+    <view class="e">👑</view>
+    <view class="t">你不是管家</view>
+    <view>这块只对管家开放</view>
+    <view class="back-btn" bindtap="goBack">回到菜单</view>
+  </view>
+
+  <!-- 管家面板 -->
+  <block wx:else>
+    <!-- 副标题 -->
+    <view class="page-sub">{{subText}}</view>
+
+    <!-- 订单列表 -->
+    <block wx:if="{{orders.length}}">
+      <view class="sec-title">待处理</view>
+      <view wx:for="{{orders}}" wx:key="_id" class="card order-card">
+        <view class="order-head">
+          <view class="order-no">单号 {{item.orderNo}}</view>
+          <view class="tag" style="color:{{item.statusColor}};background:{{item.statusBg}}">{{item.statusText}}</view>
+        </view>
+        <view class="order-items">{{item.summary}}</view>
+        <view class="order-remark" wx:if="{{item.remark}}">💬 {{item.remark}}</view>
+        <view class="order-foot">
+          <view class="order-time">{{item.timeText}}</view>
+          <view class="order-total">¥{{item.total}}</view>
+        </view>
+        <view class="order-actions">
+          <view
+            class="action-btn {{item.action.value === 'done' ? 'done-btn' : ''}}"
+            data-id="{{item._id}}"
+            data-action="{{item.action.value}}"
+            bindtap="onAction"
+          >{{item.action.label}}</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:if="{{!loading && !orders.length}}" class="empty">
+      <view class="e">📭</view>
+      <view class="t">没有待处理的单</view>
+      <view>宝贝还没下单呢</view>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading">加载中…</view>
+  </block>
+
+  <view class="footer-space"></view>
+</view>

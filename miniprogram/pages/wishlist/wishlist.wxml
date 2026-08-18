@@ -1,0 +1,69 @@
+<view class="page-root">
+  <!-- 顶部导航胶囊（内联，不用组件——组件编译在本环境不稳定） -->
+  <view class="nb-capsule" style="padding-top:{{statusBarHeight}}px;">
+    <view class="nb-pill">
+      <!-- WebGL 流动烟雾背景 -->
+      <canvas type="webgl" id="nb-flux" class="nb-flux"></canvas>
+      <view wx:if="{{showBack}}" class="nb-back" bindtap="goBack">‹</view>
+      <view class="nb-title">心愿单</view>
+    </view>
+  </view>
+
+  <view class="bg-decor"></view>
+  <!-- 副标题 -->
+  <view class="page-sub" wx:if="{{isAdmin}}">你是管家，能帮 TA 实现</view>
+  <view class="page-sub" wx:else>写下想要的</view>
+
+  <!-- 输入区 -->
+  <view class="wish-input">
+    <input
+      class="wi-input"
+      placeholder="想吃什么 / 想要什么…"
+      placeholder-class="wi-ph"
+      value="{{input}}"
+      bindinput="onInput"
+      maxlength="40"
+      confirm-type="done"
+      bindconfirm="add"
+    />
+    <view class="wi-btn" bindtap="add">记录</view>
+  </view>
+
+  <!-- 心愿列表 -->
+  <block wx:if="{{list.length}}">
+    <view class="sec-title">心愿 {{list.length}} 个</view>
+    <view wx:for="{{list}}" wx:key="_id" class="wish-item card">
+      <view class="wish-main">
+        <view class="wish-content {{item.granted ? 'done' : ''}}">
+          {{item.granted ? '✨' : '🌟'}} {{item.content}}
+        </view>
+        <view class="wish-meta">
+          <text class="wish-time">{{item.timeText}}</text>
+          <text class="wish-status {{item.granted ? 'done' : ''}}">
+            {{item.granted ? '已实现' : '想吃中'}}
+          </text>
+        </view>
+      </view>
+      <view class="wish-ops">
+        <view
+          wx:if="{{isAdmin && !item.granted}}"
+          class="wish-grant"
+          data-id="{{item._id}}"
+          bindtap="grant"
+        >实现</view>
+        <view class="wish-del" data-id="{{item._id}}" bindtap="remove">✕</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!loading && !list.length}}" class="empty">
+    <view class="e">🌙</view>
+    <view class="t">还没许过愿</view>
+    <view>把想要的写下来，等 TA 来实现</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中…</view>
+
+  <view class="footer-space"></view>
+</view>

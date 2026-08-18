@@ -1,0 +1,9 @@
+{
+  "name": "initData",
+  "version": "1.0.0",
+  "description": "初始化默认菜单（幂等）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

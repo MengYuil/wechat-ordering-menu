@@ -1,0 +1,163 @@
+/* ===== 心情页 —— Liquid Glass ===== */
+
+/* 情绪网格（3 列） */
+.mood-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 0 32rpx 24rpx;
+}
+
+.mood {
+  width: 212rpx;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: saturate(200%) blur(16rpx);
+  -webkit-backdrop-filter: saturate(200%) blur(16rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.8),
+    inset 0 1rpx 3rpx rgba(255, 255, 255, 0.7),
+    0 8rpx 24rpx rgba(0, 0, 0, 0.06),
+    0 0 20rpx rgba(10, 132, 255, 0.2);
+  border-radius: 999rpx;
+  padding: 36rpx 0;
+  margin-bottom: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  transition: transform 140ms var(--ease-out);
+}
+
+.mood-pressed {
+  transform: scale(0.94);
+}
+
+.mood .mo {
+  font-size: 76rpx;
+  line-height: 1;
+}
+
+.mood .ml {
+  font-size: 26rpx;
+  color: var(--label-2);
+  font-weight: 500;
+}
+
+/* 时间线记录 */
+.mood-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: saturate(200%) blur(16rpx);
+  -webkit-backdrop-filter: saturate(200%) blur(16rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.8),
+    inset 0 1rpx 3rpx rgba(255, 255, 255, 0.7),
+    0 8rpx 24rpx rgba(0, 0, 0, 0.06),
+    0 0 20rpx rgba(10, 132, 255, 0.16);
+  border-radius: 999rpx;
+  padding: 26rpx 32rpx;
+  margin: 0 32rpx 20rpx;
+}
+
+.mood-item .mo {
+  font-size: 56rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.mi-info {
+  flex: 1;
+  margin-left: 24rpx;
+}
+
+.mi-label {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.mi-time {
+  font-size: 22rpx;
+  color: var(--label-2);
+  margin-top: 6rpx;
+}
+
+/* 时段标签（今天/昨天/更早）*/
+.day-tag {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--label-2);
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 999rpx;
+  padding: 6rpx 18rpx;
+}
+
+/* 本周小结卡片 */
+.summary-card {
+  margin: 8rpx 32rpx 24rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 40rpx;
+  background: linear-gradient(135deg, rgba(10, 132, 255, 0.10), rgba(236, 72, 153, 0.08));
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.8),
+    inset 0 1rpx 3rpx rgba(255, 255, 255, 0.7),
+    0 16rpx 44rpx rgba(0, 0, 0, 0.06),
+    0 0 24rpx rgba(10, 132, 255, 0.15);
+}
+.sum-t {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--label);
+}
+.sum-d {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: var(--label-2);
+  line-height: 1.7;
+}
+.sum-b {
+  color: #0A84FF;
+  font-weight: 700;
+}
+
+.footer-space {
+  height: 140rpx;
+}
+
+/* 大粒子动画 */
+.particles-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 300;
+  overflow: hidden;
+}
+
+.particle-anim {
+  position: absolute;
+  opacity: 0;
+  animation: big-float var(--dur) cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+}
+
+@keyframes big-float {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.6);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* ===== 模块标题对齐：与下方内容(32rpx)对齐，覆盖全局 .sec-title(8rpx) ===== */
+.sec-title {
+  margin: 0 32rpx 16rpx;
+}

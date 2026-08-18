@@ -1,0 +1,398 @@
+/**
+ * 情侣生活 · 全局设计系统 —— Liquid Glass 液态玻璃
+ * 白色背景 · 半透明玻璃 · 边缘折射高光 · 底部折射投影 · 深色文字
+ * 设计稿 750rpx，1pt = 2rpx
+ */
+
+page {
+  --bg: #FAFAFC;
+
+  /* 玻璃材质（浅色半透明，深字可读）——提白，去灰感 */
+  --glass: rgba(255, 255, 255, 0.78);
+  --glass-strong: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(0, 0, 0, 0.06);
+
+  /* 文字（浅色背景上深色清晰） */
+  --label: #1C1C1E;
+  --label-2: rgba(60, 60, 67, 0.6);
+  --label-3: rgba(60, 60, 67, 0.3);
+  --separator: rgba(0, 0, 0, 0.1);
+
+  /* 强调色（iOS 蓝，浅底可见） */
+  --accent: #007AFF;
+  --accent-deep: #0062CC;
+  --accent-soft: rgba(0, 122, 255, 0.12);
+
+  /* 状态色（浅色模式 iOS） */
+  --blue: #007AFF;   --blue-soft: rgba(0, 122, 255, 0.12);
+  --green: #34C759;  --green-soft: rgba(52, 199, 89, 0.14);
+  --orange: #FF9500; --orange-soft: rgba(255, 149, 0, 0.14);
+  --red: #FF3B30;    --red-soft: rgba(255, 59, 48, 0.12);
+  --gray: #8E8E93;   --gray-soft: rgba(142, 142, 147, 0.16);
+
+  /* 底部折射光斑颜色（跟随背景中段的粉紫，浅底降浓度） */
+  --glow-color: rgba(236, 72, 153, 0.25);
+
+  --radius-sm: 16rpx;
+  --radius: 28rpx;
+  --radius-lg: 36rpx;
+
+  --shadow: 0 16rpx 44rpx rgba(0, 0, 0, 0.08);
+  --shadow-float: 0 20rpx 56rpx rgba(0, 0, 0, 0.12);
+  --shadow-btn: 0 8rpx 24rpx rgba(0, 122, 255, 0.30);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  background: var(--bg);
+  color: var(--label);
+  font-size: 30rpx;
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding-bottom: 220rpx;
+}
+
+/* ===== 背景墙纸（加强光晕浓度，白玻璃才有颜色可透）===== */
+.bg-decor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* z-index:-1：必须垫底！否则近白渐变会盖住并洗白头部内容（细字直接隐形） */
+  z-index: -1;
+  pointer-events: none;
+  /* 彩色极光 + 漂浮光斑：玻璃需要颜色透过来才显形 */
+  background:
+    radial-gradient(520rpx 520rpx at 18% 12%, rgba(10, 132, 255, 0.14), transparent 62%),
+    radial-gradient(560rpx 560rpx at 82% 8%, rgba(236, 72, 153, 0.12), transparent 62%),
+    radial-gradient(620rpx 620rpx at 50% 88%, rgba(124, 58, 237, 0.10), transparent 62%),
+    radial-gradient(300rpx 300rpx at -80rpx 430rpx, rgba(10, 132, 255, 0.16), transparent 65%),
+    radial-gradient(240rpx 240rpx at 810rpx 660rpx, rgba(236, 72, 153, 0.14), transparent 65%),
+    radial-gradient(340rpx 340rpx at 180rpx 1240rpx, rgba(124, 58, 237, 0.12), transparent 65%),
+    linear-gradient(180deg, #FFFFFF 0%, #F6F6FB 100%);
+}
+
+/* ===== 玻璃卡片（浅色半透明 + 模糊 + 边缘高光 + 底部光斑）===== */
+.card {
+  position: relative;
+  background: var(--glass);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border-radius: var(--radius-lg);
+  padding: 32rpx;
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.8),
+    inset 0 1rpx 3rpx rgba(255, 255, 255, 0.7),
+    0 16rpx 44rpx rgba(0, 0, 0, 0.06),
+    0 28rpx 60rpx var(--glow-color),
+    0 0 24rpx rgba(10, 132, 255, 0.12);
+  overflow: hidden;
+}
+
+/* 边缘折射高光：斜向白色渐变，光线打在玻璃边缘 */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.16) 35%, rgba(255, 255, 255, 0.34) 65%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+/* ===== 玻璃工具类 ===== */
+.glass {
+  position: relative;
+  background: var(--glass);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  box-shadow:
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.28),
+    0 16rpx 44rpx rgba(0, 0, 0, 0.35),
+    0 28rpx 60rpx var(--glow-color);
+  overflow: hidden;
+}
+.glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.16) 35%, rgba(255, 255, 255, 0.34) 65%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+/* ============================================================
+   玻璃胶囊统一材质 —— 底部 tabbar 同款，全 app 交互控件收敛到这里
+   三件套（缺一不可）：
+   ① 白玻璃：rgba(255,255,255,.45) + backdrop blur(16rpx) saturate(200%)
+   ② inset 白描边 + 顶部光：inset 0 0 0 1rpx rgba(255,255,255,.8),
+      inset 0 1rpx 3rpx rgba(255,255,255,.7)
+   ③ 蓝色光晕：0 0 20rpx rgba(10,132,255,.25)
+   圆角统一 999rpx（胶囊）。
+   注意：元素嵌在已有 blur 的容器里时（如 .card 内），不要再加
+   backdrop-filter（微信嵌套 blur 渲染不可靠），只留半透明底+高光。
+   ============================================================ */
+
+/* ===== 降级：不支持 backdrop-filter 时，纯半透明 + 阴影（不白屏不报错）===== */
+.no-blur .card,
+.no-blur .glass,
+.card.no-blur,
+.glass.no-blur {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(26, 26, 44, 0.78);
+}
+
+/* ===== 顶部导航胶囊（内联到各页，不用自定义组件——组件编译在本环境不稳定）=====
+   注意：position 用 sticky + z-index:100，置顶悬浮不被滚动内容盖住，且不吞下方渲染 */
+.nb-capsule {
+  position: sticky;
+  top: 0;
+  z-index: 100;  /* 置顶：滚动时不被下层内容盖住；sticky 不影响下方渲染 */
+}
+.nb-pill {
+  position: relative;
+  height: 88rpx;
+  margin: 8rpx 24rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* 裁剪，限制容器内 */
+  /* 轻玻璃胶囊：半透明 + 毛玻璃模糊 */
+  background: rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(24rpx) saturate(160%);
+  -webkit-backdrop-filter: blur(24rpx) saturate(160%);
+  border: 1rpx solid rgba(255, 255, 255, 0.9);
+  border-radius: 999rpx;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.95),       /* 顶部内圈光 */
+    inset 0 -14rpx 20rpx rgba(0, 0, 0, 0.07),         /* 底部内阴影，体积感 */
+    0 8rpx 24rpx rgba(0, 0, 0, 0.10),
+    0 0 20rpx rgba(10, 132, 255, 0.16);
+}
+/* 顶部镜面高光带 + 玻璃锁边：压在烟雾之上，出玻璃质感，让烟雾嵌在玻璃内 */
+.nb-pill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(255,255,255,0.42), rgba(255,255,255,0.10) 55%, transparent);
+  box-shadow:
+    inset 0 0 0 1.5rpx rgba(255,255,255,0.7),
+    inset 0 2rpx 3rpx rgba(255,255,255,0.5);
+}
+.nb-title {
+  position: relative;
+  z-index: 3; /* 位于玻璃外壳(2)与烟雾(0/1)之上，文字最清晰 */
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--label);
+  text-shadow: 0 1rpx 8rpx rgba(255, 255, 255, 0.9);
+}
+
+/* ===== 头部胶囊 WebGL 流动烟雾（全局，各页 canvas 使用）===== */
+.nb-flux {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;   /* 跟随胶囊圆角 */
+  pointer-events: none;      /* 不挡点击 */
+  z-index: 0;                /* 垫底：烟雾藏在玻璃里 */
+  opacity: 0.55;             /* 半透明：透出底部毛玻璃，烟雾嵌入而非贴面 */
+}
+
+.nb-back {
+  position: absolute;
+  left: 8rpx;
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  color: #0A84FF;
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* ===== 头部排版 ===== */
+.appbar {
+  padding: 24rpx 32rpx 12rpx;
+}
+.greet {
+  font-size: 30rpx;
+  color: #48484A;
+  font-weight: 500;
+  letter-spacing: 1rpx;
+  margin-bottom: 4rpx;
+}
+.headline {
+  position: relative;
+  display: inline-block;
+  font-size: 64rpx;
+  font-weight: 700;
+  letter-spacing: -1rpx;
+  line-height: 1.12;
+  color: var(--label);
+}
+/* 标题下的渐变高亮笔划（marker 感） */
+.headline .hl {
+  position: absolute;
+  left: 0;
+  right: -8rpx;
+  bottom: 4rpx;
+  height: 20rpx;
+  border-radius: 12rpx;
+  background: linear-gradient(90deg, rgba(10, 132, 255, 0.20), rgba(236, 72, 153, 0.18));
+}
+.headline text {
+  position: relative;
+  z-index: 1;
+}
+.sub {
+  font-size: 28rpx;
+  color: #48484A;
+  margin-top: 8rpx;
+}
+.page-sub {
+  padding: 8rpx 32rpx 16rpx;
+  font-size: 26rpx;
+  color: var(--label-2);
+}
+
+.sec-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--label-2);
+  letter-spacing: 0.5rpx;
+  margin: 0 8rpx 16rpx;
+}
+
+.divider {
+  height: 1rpx;
+  background: var(--separator);
+  margin: 24rpx 0;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8rpx 0;
+  font-size: 30rpx;
+}
+.line-price.big {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--label);
+}
+
+.btn-main {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-radius: 999rpx;
+  text-align: center;
+  padding: 28rpx 0;
+  font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: var(--shadow-btn);
+  transition: transform 120ms var(--ease-out), opacity 120ms var(--ease-out);
+}
+.btn-main:active {
+  transform: scale(0.97);
+}
+.btn-main.disabled {
+  opacity: 0.5;
+}
+
+.btn-ghost {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  color: var(--accent);
+  border-radius: 999rpx;
+  border: 1rpx solid var(--glass-border);
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 30rpx;
+  font-weight: 600;
+  transition: transform 120ms var(--ease-out);
+}
+.btn-ghost:active {
+  transform: scale(0.96);
+}
+
+.pill-btn {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-radius: 999rpx;
+  padding: 14rpx 36rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  box-shadow: var(--shadow-btn);
+  transition: transform 120ms var(--ease-out);
+}
+.pill-btn:active {
+  transform: scale(0.94);
+}
+
+.remark {
+  width: 100%;
+  min-height: 120rpx;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  border-radius: 999rpx;
+  padding: 24rpx 32rpx;
+  font-size: 30rpx;
+  color: var(--label);
+  box-sizing: border-box;
+  /* 嵌在 .card 内：不加 backdrop-filter，避免微信嵌套 blur 渲染异常 */
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.7), inset 0 1rpx 3rpx rgba(255, 255, 255, 0.6);
+}
+.remark-ph {
+  color: var(--label-3);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.empty {
+  text-align: center;
+  padding: 160rpx 40rpx;
+  color: var(--label-2);
+  font-size: 26rpx;
+}
+.empty .e {
+  font-size: 96rpx;
+  line-height: 1;
+  margin-bottom: 24rpx;
+}
+.empty .t {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--label);
+  margin-bottom: 8rpx;
+}
