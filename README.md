@@ -94,6 +94,3 @@ dcapp-v2/
 - 方式二：改 `cloudfunctions/initData` 的 `DEFAULT_DISHES`，清空集合后重跑
 - 加图片：上传云存储，给 dish 记录加 `image` 字段存 fileID
 
-## 免费额度提醒
-
-云函数 100 万次/月、数据库读 5 万/天写 3 万/天、存储 5GB，情侣单用户完全够用。
