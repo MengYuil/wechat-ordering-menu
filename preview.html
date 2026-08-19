@@ -3,395 +3,551 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>情侣生活 · Google UI 原型</title>
+<title>WeChat Ordering Menu · 最新预览</title>
 <style>
   :root {
-    --bg: #FAF6F0;
-    --surface: #FFFFFF;
-    --surface-dim: #F4EDE5;
-    --primary: #E8614F;
-    --primary-deep: #D14E3C;
-    --primary-container: #FCE9E3;
-    --on-primary: #FFFFFF;
-    --text: #241E19;
-    --text-2: #8A817A;
-    --outline: #EAE2D9;
-    --success: #4CAF50;
-    --success-bg: #E7F4E8;
-    --warn: #F5A623;
-    --warn-bg: #FCF1DC;
-    --blue: #5B8DEF;
-    --blue-bg: #E8F0FE;
-    --radius-lg: 24px;
-    --radius: 18px;
-    --shadow: 0 4px 18px rgba(60, 40, 20, 0.06);
+    --bg: #FAFAFC;
+    --glass: rgba(255,255,255,0.78);
+    --glass-strong: rgba(255,255,255,0.92);
+    --glass-border: rgba(0,0,0,0.06);
+    --label: #1C1C1E;
+    --label-2: rgba(60,60,67,0.6);
+    --label-3: rgba(60,60,67,0.3);
+    --separator: rgba(0,0,0,0.1);
+    --accent: #007AFF;
+    --accent-deep: #0062CC;
+    --glow: rgba(236,72,153,0.25);
+    --radius: 28rpx;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    background: #EDE6DC;
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
-    color: var(--text);
+    background: #E9E9F0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+    color: var(--label);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 28px 0;
+    display:flex; flex-direction:column; align-items:center;
+    padding: 26px 0 40px;
+    -webkit-font-smoothing: antialiased;
   }
   body::before {
-    content: "📱 情侣生活 · Google UI 原型预览";
-    font-size: 12px; color: #9a8f82; margin-bottom: 16px;
-    font-weight: 600; letter-spacing: .5px;
+    content: "📱 WeChat Ordering Menu · 微信点餐（液态玻璃版）";
+    font-size: 12px; color:#8E8E98; margin-bottom:14px; font-weight:600; letter-spacing:.4px;
   }
   .phone {
-    width: 390px; height: 780px;
-    background:
-      radial-gradient(circle at 92% -8%, rgba(232,97,79,0.10), transparent 46%),
-      radial-gradient(circle at -12% 42%, rgba(245,166,35,0.09), transparent 42%),
-      radial-gradient(circle at 108% 78%, rgba(91,141,239,0.06), transparent 40%),
-      var(--bg);
-    border-radius: 40px; border: 9px solid #2b2b2b;
-    overflow: hidden; position: relative;
-    display: flex; flex-direction: column;
-    box-shadow: 0 30px 70px rgba(0,0,0,0.28);
+    width: 390px; height: 800px; position:relative;
+    background: var(--bg);
+    border-radius: 44px; border: 9px solid #1c1c1e;
+    overflow:hidden; display:flex; flex-direction:column;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.30);
   }
   .notch {
-    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-    width: 140px; height: 26px; background: #2b2b2b;
-    border-radius: 0 0 18px 18px; z-index: 50;
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:140px; height:28px; background:#1c1c1e;
+    border-radius:0 0 20px 20px; z-index:100;
+  }
+  /* 极光背景 */
+  .bg-decor {
+    position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(270px 270px at 18% 12%, rgba(10,132,255,0.14), transparent 62%),
+      radial-gradient(290px 290px at 82% 8%, rgba(236,72,153,0.12), transparent 62%),
+      radial-gradient(320px 320px at 50% 88%, rgba(124,58,237,0.10), transparent 62%),
+      radial-gradient(160px 160px at -40px 220px, rgba(10,132,255,0.16), transparent 65%),
+      radial-gradient(125px 125px at 420px 340px, rgba(236,72,153,0.14), transparent 65%),
+      radial-gradient(175px 175px at 90px 640px, rgba(124,58,237,0.12), transparent 65%),
+      linear-gradient(180deg, #FFFFFF 0%, #F6F6FB 100%);
+  }
+  .screen { position:relative; z-index:1; flex:1; overflow:hidden; }
+  .page {
+    position:absolute; inset:0; overflow-y:auto; display:none;
+    padding-bottom: 110px; -webkit-overflow-scrolling:touch;
+  }
+  .page.active { display:block; }
+  .page::-webkit-scrollbar { display:none; }
+
+  /* ===== 顶部导航胶囊 ===== */
+  .nb-capsule { position:sticky; top:0; z-index:90; padding-top:34px; }
+  .nb-pill {
+    position:relative; height:44px; margin:4px 14px 0; border-radius:999px;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(255,255,255,0.60);
+    backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border:1px solid rgba(255,255,255,0.9);
+    box-shadow:
+      inset 0 1px 2px rgba(255,255,255,0.95),
+      inset 0 -7px 10px rgba(0,0,0,0.07),
+      0 8px 24px rgba(0,0,0,0.10),
+      0 0 20px rgba(10,132,255,0.16);
+    overflow:hidden;
+  }
+  .nb-pill::after {
+    content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:2;
+    background: linear-gradient(180deg, rgba(255,255,255,0.42), rgba(255,255,255,0.10) 55%, transparent);
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.7), inset 0 2px 3px rgba(255,255,255,0.5);
+  }
+  .nb-title { position:relative; z-index:3; font-size:17px; font-weight:600; text-shadow:0 1px 8px rgba(255,255,255,0.9); }
+  .nb-back { position:absolute; left:4px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:30px; color:#0A84FF; z-index:4; cursor:pointer; }
+  /* 流动烟雾模拟 */
+  .flux { position:absolute; inset:0; border-radius:inherit; z-index:1; opacity:.55; pointer-events:none; overflow:hidden;
+    background:
+      radial-gradient(60px 30px at 20% 50%, rgba(10,132,255,.35), transparent 70%),
+      radial-gradient(70px 34px at 60% 60%, rgba(236,72,153,.30), transparent 70%),
+      radial-gradient(55px 26px at 85% 40%, rgba(124,58,237,.28), transparent 70%);
+    filter: blur(6px);
+    animation: fluxMove 7s ease-in-out infinite alternate;
+  }
+  @keyframes fluxMove {
+    0% { transform: translateX(-6%) scale(1); opacity:.5; }
+    100% { transform: translateX(6%) scale(1.15); opacity:.7; }
   }
 
-  .appbar { padding: 46px 22px 8px; flex-shrink: 0; }
-  .appbar .headline { font-size: 26px; font-weight: 700; letter-spacing: -.3px; }
-  .appbar .sub { font-size: 13px; color: var(--text-2); margin-top: 5px; }
+  /* ===== 头部 ===== */
+  .appbar { padding: 14px 16px 8px; }
+  .header-row { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .header-left { flex:1; min-width:0; }
+  .greet { font-size:15px; color:#48484A; font-weight:500; letter-spacing:.5px; margin-bottom:2px; }
+  .headline { position:relative; display:inline-block; font-size:32px; font-weight:700; letter-spacing:-.5px; line-height:1.12; }
+  .headline .hl { position:absolute; left:0; right:-4px; bottom:3px; height:10px; border-radius:6px;
+    background: linear-gradient(90deg, rgba(10,132,255,0.20), rgba(236,72,153,0.18)); }
+  .headline text { position:relative; z-index:1; }
+  .sub { font-size:14px; color:#48484A; margin-top:4px; }
 
-  .screen { flex: 1; overflow: hidden; position: relative; }
-  .page { position: absolute; inset: 0; overflow-y: auto; display: none; padding-bottom: 96px; }
-  .page.active { display: block; }
-  .page::-webkit-scrollbar { display: none; }
-
-  /* 菜单页标题行 + 右侧入口按钮 */
-  .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .header-left { flex: 1; min-width: 0; }
-  .entry-btns { display: flex; gap: 8px; flex-shrink: 0; }
+  /* 右侧入口 */
+  .entry-btns { display:flex; gap:6px; flex-shrink:0; }
   .entry {
-    display: flex; flex-direction: column; align-items: center;
-    background: var(--surface); border-radius: 12px; padding: 8px 13px;
-    box-shadow: var(--shadow); cursor: pointer; position: relative;
+    position:relative; display:flex; flex-direction:column; align-items:center;
+    background: rgba(255,255,255,0.45);
+    backdrop-filter: blur(16px) saturate(200%); -webkit-backdrop-filter: blur(16px) saturate(200%);
+    border:1px solid rgba(255,255,255,0.7); border-radius:999px;
+    padding:8px 13px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 1px 3px rgba(255,255,255,0.7),
+      0 8px 24px rgba(0,0,0,0.1), 0 0 20px rgba(10,132,255,0.2);
+    cursor:pointer; transition: transform .16s cubic-bezier(.23,1,.32,1);
   }
-  .e-ico { font-size: 18px; line-height: 1; }
-  .e-label { font-size: 10px; color: var(--text-2); margin-top: 3px; }
-  .entry-badge {
-    position: absolute; top: -5px; right: -4px;
-    background: var(--primary); color: #fff; font-size: 10px; font-weight: 700;
-    border-radius: 999px; padding: 1px 6px; display: none;
-  }
-  .entry-badge.show { display: block; }
-  .entry-badge.bounce { animation: bounce .4s ease; }
+  .entry:active { transform: scale(.96); }
+  .entry::before { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 33%, rgba(255,255,255,0.7) 66%, rgba(255,255,255,0) 100%); }
+  .e-ico { font-size:20px; line-height:1; }
+  .e-label { font-size:10px; color:var(--label-2); margin-top:3px; }
+  .entry-badge { position:absolute; top:-4px; right:-4px; z-index:5; background:var(--accent); color:#fff;
+    font-size:10px; font-weight:700; border-radius:999px; padding:1px 6px; display:none; }
+  .entry-badge.show { display:block; }
+  .entry-badge.bounce { animation: badge-bounce .4s ease; }
+  @keyframes badge-bounce { 0%{transform:scale(1);} 40%{transform:scale(1.5);} 100%{transform:scale(1);} }
 
-  /* 菜单页固定头部 */
-  .menu-top {
-    position: sticky; top: 0; z-index: 20;
-    background: rgba(250,246,240,0.92);
-    backdrop-filter: blur(14px);
+  /* 分类 segment */
+  .segment { display:flex; margin:10px 16px 14px; gap:6px; }
+  .seg {
+    flex:1; padding:8px 0; font-size:12px; color:#48484A; text-align:center; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:4px;
+    border-radius:999px; background: rgba(255,255,255,0.42); border:1px solid rgba(255,255,255,0.7);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 1px 3px rgba(255,255,255,0.6), 0 4px 12px rgba(0,0,0,0.05);
+    transition: background .25s, box-shadow .25s, color .25s, transform .25s;
+    white-space:nowrap;
+  }
+  .seg.on {
+    color:#1C1C1E; font-weight:600;
+    background: rgba(255,255,255,0.78); border-color: rgba(255,255,255,0.9);
+    box-shadow: inset 0 1px 3px rgba(255,255,255,0.85), 0 4px 14px rgba(0,0,0,0.08), 0 0 18px rgba(10,132,255,0.30);
+    transform: translateY(-1px);
+  }
+  .seg-ico { font-size:15px; line-height:1; }
+
+  /* 菜品分组列表 */
+  .grouped {
+    position:relative; margin: 10px 16px 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: saturate(150%) blur(22px); -webkit-backdrop-filter: saturate(150%) blur(22px);
+    border-radius: 20px; overflow:hidden;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 16px 44px rgba(0,0,0,0.08), 0 28px 60px var(--glow);
+  }
+  .grouped::before { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.22) 35%, rgba(255,255,255,0.45) 65%, rgba(255,255,255,0) 100%); }
+  .grow {
+    display:flex; align-items:center; padding:13px 14px; border-bottom:1px solid var(--separator);
+    cursor:pointer; position:relative; z-index:1;
+  }
+  .grow:last-child { border-bottom:none; }
+  .grow:active { background: rgba(0,0,0,0.03); }
+  .grouped.enter .grow { animation: row-in .32s cubic-bezier(.23,1,.32,1) both; }
+  @keyframes row-in { from{opacity:0; transform:translateY(7px);} to{opacity:1; transform:translateY(0);} }
+  .grow-emoji {
+    width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:26px; flex-shrink:0;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.9), 0 8px 20px rgba(0,0,0,0.08);
+  }
+  .t0 { background: linear-gradient(135deg,#FFE8D6,#FFD0C2); }
+  .t1 { background: linear-gradient(135deg,#D8F3E3,#BFE8D8); }
+  .t2 { background: linear-gradient(135deg,#DCE9FF,#C7D9FF); }
+  .t3 { background: linear-gradient(135deg,#F3E0FF,#E6CDFF); }
+  .t4 { background: linear-gradient(135deg,#FFF3C9,#FFE7A0); }
+  .t5 { background: linear-gradient(135deg,#DDF3FF,#C4E9FF); }
+  .grow-info { flex:1; margin-left:12px; min-width:0; }
+  .grow-name { font-size:16px; font-weight:600; }
+  .grow-desc { font-size:12px; color:var(--label-2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .grow-right { display:flex; align-items:center; gap:10px; flex-shrink:0; margin-left:8px; }
+  .grow-price { font-size:16px; font-weight:700; }
+  .add-btn {
+    width:28px; height:28px; border-radius:50%;
+    background: rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.95);
+    color:#1C1C1E; font-size:18px; font-weight:500;
+    display:flex; align-items:center; justify-content:center; line-height:1;
+    box-shadow: inset 0 0 0 1.5px #fff, inset 0 1px 4px rgba(255,255,255,0.9), 0 4px 12px rgba(0,0,0,0.06), 0 0 18px rgba(10,132,255,0.4);
+    transition: transform .12s cubic-bezier(.23,1,.32,1);
+  }
+  .add-btn:active { transform: scale(.92); }
+
+  /* 底部结算条 */
+  .settle-bar {
+    position:absolute; left:16px; right:16px; bottom:76px; z-index:50;
+    display:none; align-items:center; justify-content:space-between;
+    background: var(--glass-strong);
+    backdrop-filter: saturate(180%) blur(28px); -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border:1px solid var(--glass-border); border-radius:999px; padding:10px 10px 10px 20px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 1px 3px rgba(255,255,255,0.7),
+      0 16px 44px rgba(0,0,0,0.08), 0 0 24px rgba(10,132,255,0.22);
+    cursor:pointer;
+  }
+  .sb-count { font-size:11px; color:var(--label-2); }
+  .sb-total { font-size:20px; font-weight:700; margin-top:1px; }
+  .sb-btn {
+    background: linear-gradient(135deg,#0A84FF,#0071E3); color:#fff; border-radius:999px;
+    padding:11px 22px; font-size:15px; font-weight:600; box-shadow: 0 8px 24px rgba(0,122,255,0.32);
   }
 
-  .chips {
-    display: flex; gap: 8px; padding: 12px 20px 14px;
-    overflow-x: auto; background: transparent;
+  /* 支付抽屉 */
+  .sheet-mask {
+    position:absolute; inset:0; background: rgba(0,0,0,0.3); z-index:200;
+    display:none; align-items:flex-end;
   }
-  .chips::-webkit-scrollbar { display: none; }
-  .chip {
-    white-space: nowrap; padding: 8px 16px; border-radius: 999px;
-    background: var(--surface); color: var(--text-2); font-size: 13px;
-    border: 1px solid var(--outline); cursor: pointer;
+  .sheet-mask.show { display:flex; }
+  .sheet {
+    width:100%; background: rgba(28,28,48,0.92);
+    backdrop-filter: saturate(180%) blur(32px); -webkit-backdrop-filter: saturate(180%) blur(32px);
+    border-radius: 24px 24px 0 0; padding: 14px 16px 24px; color:#fff;
+    animation: slide-up .3s cubic-bezier(.32,.72,0,1); max-height:84%;
+    overflow-y:auto;
   }
-  .chip.on { background: var(--primary-container); color: var(--primary-deep); border-color: transparent; font-weight: 600; }
-
-  .dish-list { padding: 2px 20px 150px; }
-  .dish {
-    display: flex; align-items: center; background: var(--surface);
-    border-radius: var(--radius-lg); box-shadow: var(--shadow);
-    padding: 14px; margin-bottom: 12px; cursor: pointer;
-    transition: transform .12s ease;
+  @keyframes slide-up { from{transform:translateY(100%);} to{transform:translateY(0);} }
+  .grab { width:36px; height:4px; background: rgba(255,255,255,0.35); border-radius:999px; margin:0 auto 14px; }
+  .sheet-title { font-size:18px; font-weight:700; text-align:center; margin-bottom:14px; }
+  .dark-card {
+    background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
+    border-radius:20px; padding:14px; margin-bottom:10px;
   }
-  .dish:active { transform: scale(.97); }
-  .dish-emoji { width: 58px; height: 58px; border-radius: 16px; background: var(--surface-dim); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
-  .dish-info { flex: 1; margin-left: 14px; overflow: hidden; }
-  .dish-name { font-size: 16px; font-weight: 600; }
-  .dish-desc { font-size: 12px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
-  .dish-bottom { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
-  .dish-price { font-size: 16px; font-weight: 700; color: var(--primary-deep); }
-  .add-btn { width: 30px; height: 30px; border-radius: 10px; background: #FF7EB6; color: #fff; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-
-  /* 底部导航（无胶囊，简洁高亮） */
-  .bottomnav {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 66px;
-    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
-    border-top: 1px solid var(--outline);
-    display: flex; z-index: 40; padding-bottom: 8px;
-  }
-  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-  .nav-item .ico { font-size: 22px; line-height: 1; opacity: .55; transition: opacity .2s ease, transform .2s ease; }
-  .nav-item .lbl { font-size: 11px; margin-top: 3px; color: var(--text-2); transition: color .2s ease; }
-  .nav-item.on .ico { opacity: 1; transform: scale(1.12); }
-  .nav-item.on .lbl { color: var(--primary-deep); font-weight: 600; }
-  .nav-badge {
-    position: absolute; top: 2px; right: calc(50% - 24px);
-    background: var(--primary); color: #fff; font-size: 10px; font-weight: 700;
-    border-radius: 999px; padding: 1px 6px; display: none;
-    transition: transform .2s ease;
-  }
-  .nav-badge.show { display: block; }
-  .nav-badge.bounce { animation: bounce .4s ease; }
-  @keyframes bounce { 0% { transform: scale(1); } 40% { transform: scale(1.5); } 100% { transform: scale(1); } }
-
-  /* 飞入动画 */
-  .fly-outer {
-    position: fixed; z-index: 300; pointer-events: none;
-    transition: transform .85s linear;
-  }
-  .fly-inner {
-    font-size: 30px; line-height: 1;
-    transition: transform .85s cubic-bezier(.5, -1.1, .55, 1), opacity .85s ease;
-  }
-
-  /* 飘心动画 */
-  .heart {
-    position: fixed; z-index: 300; pointer-events: none; font-size: 24px;
-    transition: transform 1s cubic-bezier(.2, .6, .3, 1), opacity 1s ease;
-  }
-  .heart-big {
-    position: fixed; z-index: 301; pointer-events: none; font-size: 64px;
-    transform: translate(-50%, -50%) scale(0.2); opacity: 1;
-    transition: transform .7s cubic-bezier(.2,.7,.3,1), opacity .7s ease;
-  }
-
-  .card { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 16px; margin: 0 20px 12px; }
-  .sec-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-  .divider { height: 1px; background: var(--outline); margin: 10px 0; }
-  .line { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 14px; }
-  .line-price.big { font-size: 18px; font-weight: 700; color: var(--primary-deep); }
-  .btn-main {
-    background: var(--primary); color: #fff; border-radius: 999px;
-    text-align: center; padding: 14px 0; font-size: 15px; font-weight: 700;
-    box-shadow: 0 6px 18px rgba(232,97,79,0.3); cursor: pointer;
-  }
-  .empty { text-align: center; padding: 70px 0; color: var(--text-2); }
-  .empty .e { font-size: 50px; margin-bottom: 12px; }
-
-  .oi-item { display: flex; align-items: center; padding: 6px 0; }
-  .oi-emoji { width: 40px; height: 40px; border-radius: 12px; background: var(--surface-dim); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-  .oi-info { flex: 1; margin-left: 12px; }
-  .oi-name { font-size: 15px; font-weight: 600; }
-  .oi-price { font-size: 13px; color: var(--primary-deep); font-weight: 700; margin-top: 2px; }
-  .stepper { display: flex; align-items: center; gap: 12px; }
-  .step-btn { width: 26px; height: 26px; border-radius: 50%; background: var(--surface-dim); color: var(--text); font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .step-btn.add { background: var(--primary); color: #fff; }
-  .step-num { min-width: 22px; text-align: center; font-weight: 600; }
-
+  .sheet .line { display:flex; justify-content:space-between; align-items:center; padding:4px 0; font-size:14px; color:rgba(255,255,255,0.9); }
+  .sheet .divider { height:1px; background: rgba(255,255,255,0.12); margin:10px 0; }
+  .sheet .line-price.big { font-size:18px; font-weight:700; color:#fff; }
+  .sec-title { font-size:12px; font-weight:600; color:var(--label-2); letter-spacing:.3px; margin:0 4px 8px; }
+  .sheet .sec-title { color:rgba(255,255,255,0.6); }
   textarea.remark {
-    width: 100%; min-height: 60px; background: var(--surface-dim); border: none;
-    border-radius: 14px; padding: 12px; font-size: 14px; color: var(--text);
-    font-family: inherit; resize: none; outline: none; box-sizing: border-box; margin-top: 10px;
+    width:100%; min-height:60px; background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);
+    border-radius:999px; padding:12px 16px; font-size:14px; color:#fff; font-family:inherit;
+    resize:none; outline:none; box-sizing:border-box; margin-top:8px;
   }
+  .sheet textarea.remark { color:#fff; }
+  .btn-main {
+    background: var(--accent); color:#fff; border-radius:999px; text-align:center;
+    padding:14px 0; font-size:15px; font-weight:600; cursor:pointer;
+    box-shadow: 0 8px 24px rgba(0,122,255,0.32);
+  }
+  .sheet .btn-main { margin-top:12px; }
 
-  .order-card { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 16px; margin: 0 20px 12px; }
-  .order-head { display: flex; justify-content: space-between; align-items: center; }
-  .order-no { font-size: 12px; color: var(--text-2); }
-  .tag { display: inline-flex; padding: 3px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-  .order-items { margin-top: 10px; font-size: 15px; font-weight: 600; }
-  .order-remark { margin-top: 6px; font-size: 12px; color: var(--text-2); }
-  .order-foot { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .order-time { font-size: 12px; color: var(--text-2); }
-  .order-total { font-size: 17px; font-weight: 700; color: var(--primary-deep); }
-  .order-actions { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
-  .action-btn { background: var(--primary); color: #fff; border-radius: 999px; padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 3px 10px rgba(232,97,79,0.25); }
-  .action-btn.ghost { background: var(--surface); color: var(--primary-deep); border: 1px solid var(--outline); box-shadow: none; }
+  /* 通用卡片 */
+  .card {
+    position:relative; margin:0 16px 10px; background: var(--glass);
+    backdrop-filter: blur(22px) saturate(150%); -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border-radius:20px; padding:14px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 1px 3px rgba(255,255,255,0.7),
+      0 16px 44px rgba(0,0,0,0.06), 0 28px 60px var(--glow);
+    overflow:hidden;
+  }
+  .card::before { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 35%, rgba(255,255,255,0.34) 65%, rgba(255,255,255,0) 100%); }
+  .card > * { position:relative; z-index:1; }
+  .divider { height:1px; background:var(--separator); margin:10px 0; }
+  .line { display:flex; justify-content:space-between; align-items:center; padding:4px 0; font-size:14px; }
+  .line-price.big { font-size:18px; font-weight:700; }
+
+  .empty { text-align:center; padding:80px 40px; color:var(--label-2); font-size:13px; }
+  .empty .e { font-size:48px; line-height:1; margin-bottom:12px; }
+  .empty .t { font-size:15px; font-weight:600; color:var(--label); margin-bottom:4px; }
+
+  /* 订单 */
+  .oi-item { display:flex; align-items:center; padding:4px 0; }
+  .oi-emoji { width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(0,0,0,0.04); }
+  .oi-info { flex:1; margin-left:10px; }
+  .oi-name { font-size:14px; font-weight:600; }
+  .oi-price { font-size:12px; color:var(--label-2); margin-top:1px; }
+  .stepper { display:flex; align-items:center; gap:8px; }
+  .step-btn { width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,0.05); color:var(--label); font-weight:700; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px; }
+  .step-btn.add { background:var(--accent); color:#fff; }
+  .step-num { min-width:20px; text-align:center; font-weight:600; font-size:14px; }
+  .order-card { margin:0 16px 10px; }
+  .order-head { display:flex; justify-content:space-between; align-items:center; }
+  .order-no { font-size:11px; color:var(--label-2); }
+  .tag { display:inline-flex; padding:2px 10px; border-radius:999px; font-size:10px; font-weight:700; }
+  .order-items { margin-top:8px; font-size:14px; font-weight:600; }
+  .order-remark { margin-top:4px; font-size:11px; color:var(--label-2); }
+  .order-foot { margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
+  .order-time { font-size:11px; color:var(--label-2); }
+  .order-total { font-size:15px; font-weight:700; }
+  .order-actions { margin-top:10px; display:flex; justify-content:flex-end; gap:8px; }
+  .action-btn { background:var(--accent); color:#fff; border-radius:999px; padding:7px 18px; font-size:12px; font-weight:600; cursor:pointer; box-shadow:0 4px 12px rgba(0,122,255,0.25); }
+  .action-btn.ghost { background:rgba(255,255,255,0.7); color:var(--accent); border:1px solid var(--glass-border); box-shadow:none; }
+  .action-btn.done-btn { background:linear-gradient(135deg,#30D158,#28A745); box-shadow:0 4px 12px rgba(48,209,88,0.3); }
 
   /* 心情 */
-  .mood-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 20px 12px; }
+  .mood-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 16px 12px; }
   .mood {
-    background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow);
-    padding: 18px 0; display: flex; flex-direction: column; align-items: center; gap: 6px;
-    cursor: pointer; transition: transform .12s ease;
+    background: var(--glass); backdrop-filter: blur(22px) saturate(150%); -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border-radius:20px; padding:16px 0; display:flex; flex-direction:column; align-items:center; gap:4px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), 0 16px 44px rgba(0,0,0,0.06), 0 28px 60px var(--glow);
+    cursor:pointer; transition: transform .12s cubic-bezier(.23,1,.32,1);
   }
-  .mood:active { transform: scale(.95); }
-  .mood .mo { font-size: 40px; line-height: 1; }
-  .mood .ml { font-size: 13px; color: var(--text-2); }
-  .mood-item { display: flex; align-items: center; gap: 12px; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 14px; margin: 0 20px 12px; }
-  .mood-item .mo { font-size: 30px; }
-  .mood-item .mi-info { flex: 1; }
-  .mood-item .mi-label { font-size: 15px; font-weight: 600; }
-  .mood-item .mi-time { font-size: 11px; color: var(--text-2); margin-top: 3px; }
+  .mood:active { transform: scale(.94); }
+  .mood .mo { font-size:32px; line-height:1; }
+  .mood .ml { font-size:12px; color:var(--label-2); }
+  .mood-item { display:flex; align-items:center; gap:10px; background:var(--glass); backdrop-filter: blur(22px) saturate(150%); -webkit-backdrop-filter: blur(22px) saturate(150%); border-radius:20px; padding:12px; margin:0 16px 8px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), 0 16px 44px rgba(0,0,0,0.06); }
+  .mood-item .mo { font-size:24px; }
+  .mood-item .mi-info { flex:1; }
+  .mood-item .mi-label { font-size:14px; font-weight:600; }
+  .mood-item .mi-time { font-size:11px; color:var(--label-2); margin-top:2px; }
+  .day-tag { font-size:10px; color:var(--label-2); background:rgba(0,0,0,0.05); padding:2px 8px; border-radius:999px; }
+  .summary-card { margin:12px 16px 0; background:linear-gradient(135deg, rgba(10,132,255,0.10), rgba(236,72,153,0.08)); border-radius:20px; padding:14px; }
+  .sum-t { font-size:13px; font-weight:700; margin-bottom:4px; }
+  .sum-d { font-size:12px; color:var(--label-2); line-height:1.6; }
+  .sum-b { font-weight:700; color:var(--label); }
 
   /* 陪伴 */
-  .companion-big {
-    margin: 4px 20px 12px; background: var(--surface); border-radius: var(--radius-lg);
-    box-shadow: var(--shadow); padding: 28px 16px; text-align: center; cursor: pointer;
-    transition: transform .12s ease;
+  .miss-circle {
+    margin:10px 16px 12px; background: linear-gradient(135deg,#FF9DBB,#FF6F91);
+    border-radius:24px; padding:30px 16px; text-align:center; cursor:pointer;
+    box-shadow: 0 16px 44px rgba(255,111,145,0.35), inset 0 2px 4px rgba(255,255,255,0.5);
+    transition: transform .12s cubic-bezier(.23,1,.32,1);
   }
-  .companion-big:active { transform: scale(.96); }
-  .companion-big .cb-emoji { font-size: 56px; line-height: 1; }
-  .companion-big .cb-label { font-size: 16px; font-weight: 700; margin-top: 12px; }
-  .companion-big .cb-sub { font-size: 12px; color: var(--text-2); margin-top: 4px; }
-  .companion-row { display: flex; gap: 12px; margin: 0 20px 12px; }
-  .companion-row .c-half { flex: 1; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 18px 0; text-align: center; cursor: pointer; }
-  .companion-row .c-half .ch-emoji { font-size: 34px; }
-  .companion-row .c-half .ch-label { font-size: 14px; font-weight: 600; margin-top: 8px; }
+  .miss-circle:active { transform: scale(.96); }
+  .miss-circle .mc-emoji { font-size:44px; line-height:1; }
+  .miss-circle .mc-label { font-size:16px; font-weight:700; color:#fff; margin-top:8px; text-shadow:0 2px 8px rgba(0,0,0,0.15); }
+  .companion-row { display:flex; gap:10px; margin:0 16px 12px; }
+  .c-half { flex:1; background:var(--glass); backdrop-filter: blur(22px) saturate(150%); -webkit-backdrop-filter: blur(22px) saturate(150%); border-radius:20px; padding:16px 0; text-align:center; cursor:pointer; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), 0 16px 44px rgba(0,0,0,0.06); }
+  .c-half:active { transform: scale(.96); }
+  .c-half .ch-emoji { font-size:28px; }
+  .c-half .ch-label { font-size:13px; font-weight:600; margin-top:6px; }
 
   /* 心愿单 */
-  .wish-input { display: flex; gap: 8px; align-items: center; margin: 0 20px 12px; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 10px 14px; }
-  .wish-input input { flex: 1; border: none; outline: none; font-size: 15px; color: var(--text); background: transparent; }
-  .wish-item { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 14px; margin: 0 20px 12px; }
-  .wish-content { font-size: 15px; font-weight: 600; }
-  .wish-content.done { color: var(--text-2); text-decoration: line-through; }
-  .wish-meta { margin-top: 6px; font-size: 11px; color: var(--text-2); display: flex; gap: 8px; align-items: center; }
-  .wish-status { padding: 2px 10px; border-radius: 999px; background: var(--warn-bg); color: var(--warn); font-weight: 600; }
-  .wish-status.done { background: var(--success-bg); color: var(--success); }
-  .wish-del { color: var(--text-2); cursor: pointer; padding: 8px; }
+  .wish-input { display:flex; gap:8px; align-items:center; margin:0 16px 12px; background:var(--glass); backdrop-filter: blur(22px) saturate(150%); -webkit-backdrop-filter: blur(22px) saturate(150%); border-radius:999px; padding:8px 10px 8px 16px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), 0 16px 44px rgba(0,0,0,0.06); }
+  .wish-input input { flex:1; border:none; outline:none; font-size:14px; color:var(--label); background:transparent; }
+  .wi-btn { background:var(--accent); color:#fff; border-radius:999px; padding:8px 18px; font-size:13px; font-weight:600; cursor:pointer; }
+  .wish-item { display:flex; align-items:center; justify-content:space-between; margin:0 16px 10px; }
+  .wish-content { font-size:14px; font-weight:600; }
+  .wish-content.done { color:var(--label-2); text-decoration:line-through; }
+  .wish-meta { margin-top:4px; font-size:11px; color:var(--label-2); display:flex; gap:8px; align-items:center; }
+  .wish-status { padding:1px 8px; border-radius:999px; background:rgba(255,149,0,0.14); color:#FF9500; font-weight:600; font-size:10px; }
+  .wish-status.done { background:rgba(52,199,89,0.14); color:#34C759; }
+  .wish-ops { display:flex; align-items:center; gap:8px; }
+  .wish-grant { background:var(--accent); color:#fff; border-radius:999px; padding:5px 12px; font-size:11px; font-weight:600; cursor:pointer; }
+  .wish-del { color:var(--label-2); cursor:pointer; padding:6px; font-size:15px; }
+  .page-sub { padding:6px 16px 10px; font-size:13px; color:var(--label-2); }
+  .back-btn { display:inline-block; margin-top:16px; background:var(--accent); color:#fff; border-radius:999px; padding:10px 24px; font-size:13px; font-weight:600; cursor:pointer; }
 
-  /* 一键下单结算条 */
-  .settle-bar {
-    position: absolute; left: 16px; right: 16px; bottom: 74px; z-index: 45;
-    display: none; align-items: center; justify-content: space-between;
-    background: #FFFFFF;
-    color: var(--text); border-radius: 999px; padding: 12px 16px 12px 22px;
-    box-shadow: 0 10px 28px rgba(60,45,35,0.14); border: 1px solid var(--outline);
-    cursor: pointer;
+  /* 动画层 */
+  .fly-ball {
+    position:fixed; z-index:9999; pointer-events:none; margin-left:-14px; margin-top:-14px;
+    transition: transform .6s cubic-bezier(.32,.6,.36,1); will-change:transform;
   }
-  .sb-count { font-size: 12px; color: var(--text-2); }
-  .sb-total { font-size: 21px; font-weight: 700; margin-top: 1px; color: var(--primary-deep); }
-  .sb-btn { background: linear-gradient(135deg, #FF9DBB, #FF6F91); color: #fff; border-radius: 999px; padding: 12px 22px; font-size: 15px; font-weight: 700; box-shadow: 0 4px 12px rgba(255,111,145,0.35); }
-
-  /* 支付弹窗 */
-  .sheet-mask {
-    position: absolute; inset: 0; background: rgba(30,20,15,0.45);
-    z-index: 60; display: none; align-items: flex-end;
+  .fly-ball.flying { transform: translate3d(var(--dx),0,0); }
+  .fly-node { color:#FF7EB6; font-size:30px; line-height:1; text-shadow:0 4px 12px rgba(255,126,182,0.6), 0 0 2px #fff;
+    transition: transform .6s cubic-bezier(.55,0,.84,.42); will-change:transform; }
+  .fly-ball.flying .fly-node { transform: translate3d(0,var(--dy),0) scale(.4); }
+  .heart-anim { position:absolute; z-index:300; pointer-events:none; animation: floatHeart var(--dur) cubic-bezier(.2,.6,.3,1) forwards; }
+  @keyframes floatHeart {
+    0% { transform: translate(0,0) rotate(0) scale(.6); opacity:0; }
+    12% { opacity:1; }
+    100% { transform: translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(1); opacity:0; }
   }
-  .sheet-mask.show { display: flex; }
-  .sheet {
-    width: 100%; background: var(--bg); border-radius: 28px 28px 0 0;
-    padding: 18px 20px 30px; animation: slideUp .25s ease;
-    max-height: 82%; overflow-y: auto;
+  .particle-anim { position:absolute; z-index:300; pointer-events:none; animation: floatParticle var(--dur) cubic-bezier(.2,.6,.3,1) forwards; }
+  @keyframes floatParticle {
+    0% { transform: translate(0,0) rotate(0) scale(.4); opacity:0; }
+    15% { opacity:1; }
+    100% { transform: translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(1); opacity:0; }
   }
-  .sheet::-webkit-scrollbar { display: none; }
-  .sheet-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 16px; }
-  .sheet .grab { width: 40px; height: 4px; background: var(--outline); border-radius: 999px; margin: 0 auto 14px; }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
   .toast {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(40,30,20,0.88); color: #fff; padding: 11px 20px;
-    border-radius: 999px; font-size: 13px; z-index: 100; display: none; white-space: nowrap;
+    position:absolute; top:48%; left:50%; transform:translate(-50%,-50%);
+    background: rgba(40,30,20,0.88); color:#fff; padding:10px 18px; border-radius:999px;
+    font-size:13px; z-index:400; display:none; white-space:nowrap;
   }
-  .toast.show { display: block; animation: pop 1.5s forwards; }
-  @keyframes pop { 0% { opacity: 0; } 12% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+  .toast.show { display:block; animation: pop 1.5s forwards; }
+  @keyframes pop { 0%{opacity:0;} 12%{opacity:1;} 80%{opacity:1;} 100%{opacity:0;} }
+
+  /* 底部玻璃胶囊 tabbar */
+  .tabbar {
+    position:absolute; left:0; right:0; bottom:0; z-index:80;
+    margin:0 12px 12px; height:60px;
+    background: rgba(255,255,255,0.60);
+    backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border:1px solid rgba(255,255,255,0.9); border-radius:999px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 1px 3px rgba(255,255,255,0.7),
+      0 16px 44px rgba(0,0,0,0.10), 0 0 24px rgba(10,132,255,0.16);
+    display:flex; align-items:center; overflow:hidden;
+  }
+  .tab {
+    flex:1; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    cursor:pointer; position:relative; z-index:2; gap:2px;
+    transition: transform .15s cubic-bezier(.23,1,.32,1);
+  }
+  .tab .ico { font-size:20px; line-height:1; opacity:.55; transition: opacity .2s, transform .2s; }
+  .tab .lbl { font-size:10px; color:var(--label-2); transition: color .2s; }
+  .tab.on .ico { opacity:1; transform:scale(1.15); }
+  .tab.on .lbl { color:var(--accent); font-weight:600; }
+  .tab.pressing .ico { transform:scale(1.3); }
+  .tab-cap {
+    position:absolute; left:0; top:50%; z-index:1; height:46px; border-radius:999px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+    box-shadow: inset 0 1px 3px rgba(255,255,255,0.85), 0 4px 14px rgba(0,0,0,0.08), 0 0 18px rgba(10,132,255,0.30);
+    transition: transform .3s cubic-bezier(.23,1,.32,1);
+    will-change: transform;
+  }
+  .tabbar.dragging .tab-cap { transition: none; }
 </style>
 </head>
 <body>
   <div class="phone">
     <div class="notch"></div>
+    <div class="bg-decor"></div>
+
     <div class="screen" id="screen">
 
-      <!-- 菜单 -->
+      <!-- ========== 菜单 ========== -->
       <section class="page active" id="page-index">
-        <div class="menu-top">
-          <div class="appbar">
-            <div class="header-row">
-              <div class="header-left">
-                <div class="headline" style="font-size:21px">宝贝，想吃点什么？</div>
-                <div class="sub">菜单已备好，随便点 ❤</div>
-              </div>
-              <div class="entry-btns">
-                <div class="entry" onclick="showPage('page-wishlist')"><span class="e-ico">🌟</span><span class="e-label">心愿单</span></div>
-                <div class="entry" id="orderEntry" onclick="showPage('page-orders')"><span class="e-ico">📖</span><span class="e-label">订单</span><span class="entry-badge" id="entryBadge">0</span></div>
-              </div>
+        <div class="nb-capsule">
+          <div class="nb-pill"><div class="flux"></div><div class="nb-title">MengYu</div></div>
+        </div>
+        <div class="appbar">
+          <div class="header-row">
+            <div class="header-left">
+              <div class="greet" id="greet">上午好，MengYu</div>
+              <div class="headline"><div class="hl"></div><text>想吃点什么？</text></div>
+              <div class="sub" id="menuSub">共 12 道 · 今天也慢慢吃</div>
+            </div>
+            <div class="entry-btns">
+              <div class="entry" onclick="goPage('page-wishlist')"><div class="e-ico">🌟</div><div class="e-label">心愿单</div></div>
+              <div class="entry" onclick="goPage('page-orders')"><div class="e-ico">📖</div><div class="e-label">订单</div><div class="entry-badge" id="entryBadge">0</div></div>
+              <div class="entry" onclick="goPage('page-admin')"><div class="e-ico">👑</div><div class="e-label">管家</div></div>
             </div>
           </div>
-          <div class="chips" id="chipWrap"></div>
         </div>
-        <div class="dish-list" id="dishList"></div>
+        <div class="segment" id="segment"></div>
+        <div class="grouped" id="dishList"></div>
       </section>
 
-      <!-- 订单 -->
+      <!-- ========== 订单 ========== -->
       <section class="page" id="page-orders">
-        <div class="appbar">
-          <div class="headline">订单</div>
-          <div class="sub" id="ordersSub">点餐记录都在这里</div>
+        <div class="nb-capsule">
+          <div class="nb-pill"><div class="flux"></div><div class="nb-back" onclick="goBack()">‹</div><div class="nb-title">订单</div></div>
         </div>
+        <div class="page-sub" id="ordersSub">点餐记录都在这里</div>
         <div id="currentOrderWrap"></div>
+        <div class="sec-title" id="histTitle" style="display:none">历史订单</div>
         <div id="orderList"></div>
+        <div class="empty" id="ordersEmpty" style="display:none"><div class="e">📭</div><div class="t">还没下过单</div><div>去菜单点几道吧</div></div>
       </section>
 
-      <!-- 心情 -->
+      <!-- ========== 心情 ========== -->
       <section class="page" id="page-mood">
-        <div class="appbar">
-          <div class="headline">今天心情怎么样？</div>
-          <div class="sub">点一下记录此刻的心情</div>
+        <div class="nb-capsule">
+          <div class="nb-pill"><div class="flux"></div><div class="nb-title">心情</div></div>
         </div>
+        <div class="appbar">
+          <div class="greet">今天的心情</div>
+          <div class="headline"><div class="hl"></div><text>怎么样？</text></div>
+          <div class="sub">点一下记下</div>
+        </div>
+        <div class="sec-title">记一笔</div>
         <div class="mood-grid" id="moodGrid"></div>
+        <div class="sec-title">最近记录</div>
         <div id="moodList"></div>
+        <div id="summaryWrap"></div>
+        <div class="empty" id="moodEmpty" style="display:none"><div class="e">💛</div><div class="t">还没记录过</div><div>点一下上面的心情，记下此刻</div></div>
       </section>
 
-      <!-- 陪伴 -->
+      <!-- ========== 陪伴 ========== -->
       <section class="page" id="page-companion">
-        <div class="appbar">
-          <div class="headline">陪伴</div>
-          <div class="sub">不管多远，我都在</div>
+        <div class="nb-capsule">
+          <div class="nb-pill"><div class="flux"></div><div class="nb-title">陪伴</div></div>
         </div>
-        <div class="companion-big" id="missBtn">
-          <div class="cb-emoji">💗</div>
-          <div class="cb-label">想你了</div>
-          <div class="cb-sub">点一下，把想念发过去</div>
+        <div class="miss-circle" id="missBtn">
+          <div class="mc-emoji">💗</div>
+          <div class="mc-label">想你了</div>
         </div>
         <div class="companion-row">
           <div class="c-half" id="morningBtn"><div class="ch-emoji">☀️</div><div class="ch-label">早安</div></div>
           <div class="c-half" id="nightBtn"><div class="ch-emoji">🌙</div><div class="ch-label">晚安</div></div>
         </div>
+        <div class="sec-title">最近互动</div>
         <div id="companionList"></div>
+        <div class="empty" id="companionEmpty" style="display:none"><div class="e">🫂</div><div class="t">还没点过</div><div>点一下上面的心，告诉 TA 你在想</div></div>
       </section>
 
-      <!-- 心愿单 -->
+      <!-- ========== 心愿单 ========== -->
       <section class="page" id="page-wishlist">
-        <div class="appbar"><div class="headline">心愿单</div></div>
+        <div class="nb-capsule">
+          <div class="nb-pill"><div class="flux"></div><div class="nb-back" onclick="goBack()">‹</div><div class="nb-title">心愿单</div></div>
+        </div>
+        <div class="page-sub">写下想要的</div>
         <div class="wish-input">
           <input id="wishInput" maxlength="40" placeholder="想吃什么 / 想要什么…" />
-          <div class="add-btn" style="width:64px;height:32px;border-radius:999px;font-size:13px" onclick="addWish()">记录</div>
+          <div class="wi-btn" onclick="addWish()">记录</div>
         </div>
+        <div class="sec-title" id="wishTitle" style="display:none">心愿 0 个</div>
         <div id="wishList"></div>
+        <div class="empty" id="wishEmpty" style="display:none"><div class="e">🌙</div><div class="t">还没许过愿</div><div>把想要的写下来，等 TA 来实现</div></div>
       </section>
 
-      <!-- 一键下单结算条 -->
+      <!-- ========== 管家 ========== -->
+      <section class="page" id="page-admin">
+        <div class="nb-capsule">
+          <div class="nb-pill"><div class="flux"></div><div class="nb-back" onclick="goBack()">‹</div><div class="nb-title">管家</div></div>
+        </div>
+        <div class="page-sub">宝贝点单，你来接</div>
+        <div class="sec-title">待处理</div>
+        <div id="adminList"></div>
+        <div class="empty" id="adminEmpty" style="display:none"><div class="e">📭</div><div class="t">没有待处理的单</div><div>宝贝还没下单呢</div></div>
+      </section>
+
+      <!-- 结算条 -->
       <div class="settle-bar" id="settleBar" onclick="openPay()">
         <div>
           <div class="sb-count" id="sbCount">共 0 道</div>
           <div class="sb-total" id="sbTotal">¥0</div>
         </div>
-        <div class="sb-btn">下单咯 💌</div>
+        <div class="sb-btn">去下单</div>
       </div>
 
-      <!-- 底部导航 -->
-      <div class="bottomnav">
-        <div class="nav-item on" data-p="page-index" onclick="showPage('page-index')"><span class="ico">🍽️</span><span class="lbl">菜单</span></div>
-        <div class="nav-item" data-p="page-mood" onclick="showPage('page-mood')"><span class="ico">💛</span><span class="lbl">心情</span></div>
-        <div class="nav-item" data-p="page-companion" onclick="showPage('page-companion')"><span class="ico">🫂</span><span class="lbl">陪伴</span></div>
+      <!-- 底部 tabbar -->
+      <div class="tabbar" id="tabbar">
+        <div class="tab-cap" id="tabCap"></div>
+        <div class="tab on" data-i="0" data-page="page-index"><div class="ico">🍽️</div><div class="lbl">菜单</div></div>
+        <div class="tab" data-i="1" data-page="page-mood"><div class="ico">💛</div><div class="lbl">心情</div></div>
+        <div class="tab" data-i="2" data-page="page-companion"><div class="ico">🫂</div><div class="lbl">陪伴</div></div>
       </div>
     </div>
+
     <div class="toast" id="toast"></div>
 
-    <!-- 支付弹窗 -->
+    <!-- 支付抽屉 -->
     <div class="sheet-mask" id="payMask" onclick="closePay()">
       <div class="sheet" onclick="event.stopPropagation()">
         <div class="grab"></div>
         <div class="sheet-title">确认订单</div>
-        <div class="card" style="margin:0 0 12px">
+        <div class="dark-card">
           <div id="payList"></div>
           <div class="divider"></div>
           <div class="line"><span>合计</span><span class="line-price big" id="payTotal">¥0</span></div>
         </div>
-        <div class="card" style="margin:0 0 16px">
+        <div class="dark-card">
           <div class="sec-title">附言</div>
-          <textarea class="remark" id="payRemark" maxlength="60" placeholder="少放辣、多加点香菜…" style="margin-top:0"></textarea>
+          <textarea class="remark" id="payRemark" maxlength="60" placeholder="少放辣、多加点香菜…"></textarea>
         </div>
         <div class="btn-main" onclick="confirmPay()">确认支付</div>
       </div>
@@ -399,322 +555,389 @@
   </div>
 
 <script>
+/* ===== 数据（与 miniprogram 源码一致） ===== */
 const DISHES = [
-  { id: 1,  name: '番茄炒蛋面', emoji: '🍜', price: 18, category: '主食', desc: '酸甜开胃，暖胃又暖心' },
-  { id: 2,  name: '可乐鸡翅饭', emoji: '🍗', price: 22, category: '主食', desc: '甜甜的可乐裹着嫩鸡翅' },
-  { id: 3,  name: '红烧肉配饭', emoji: '🥘', price: 28, category: '主食', desc: '肥而不腻，入口即化' },
-  { id: 4,  name: '虾仁滑蛋饭', emoji: '🍤', price: 26, category: '主食', desc: '滑嫩鸡蛋遇上弹弹虾仁' },
-  { id: 5,  name: '草莓小蛋糕', emoji: '🍰', price: 15, category: '甜品', desc: '软fufu，甜到心里' },
-  { id: 6,  name: '红豆双皮奶', emoji: '🥛', price: 12, category: '甜品', desc: '奶香浓郁，红豆绵密' },
-  { id: 7,  name: '蜂蜜柚子茶', emoji: '🍯', price: 10, category: '饮品', desc: '清新润喉，暖暖的' },
-  { id: 8,  name: '珍珠奶茶', emoji: '🧋', price: 12, category: '饮品', desc: '波霸多多，快乐加倍' },
-  { id: 9,  name: '热巧克力', emoji: '☕', price: 14, category: '饮品', desc: '浓郁丝滑，治愈系' },
-  { id: 10, name: '香辣烤串', emoji: '🍢', price: 20, category: '夜宵', desc: '滋滋冒油，小心烫嘴' },
-  { id: 11, name: '蒜蓉小龙虾', emoji: '🦞', price: 45, category: '夜宵', desc: '红彤彤的一大盘' },
-  { id: 12, name: '黄金炸鸡', emoji: '🍗', price: 25, category: '夜宵', desc: '外酥里嫩，一口爆汁' }
+  { _id:'d1',  name:'番茄炒蛋面', emoji:'🍜', price:18, category:'主食', desc:'酸甜开胃，暖胃又暖心' },
+  { _id:'d2',  name:'可乐鸡翅饭', emoji:'🍗', price:22, category:'主食', desc:'甜甜的可乐裹着嫩鸡翅' },
+  { _id:'d3',  name:'红烧肉配饭', emoji:'🥘', price:28, category:'主食', desc:'肥而不腻，入口即化' },
+  { _id:'d4',  name:'虾仁滑蛋饭', emoji:'🍤', price:26, category:'主食', desc:'滑嫩鸡蛋遇上弹弹虾仁' },
+  { _id:'d5',  name:'草莓小蛋糕', emoji:'🍰', price:15, category:'甜品', desc:'软fufu，甜到心里' },
+  { _id:'d6',  name:'红豆双皮奶', emoji:'🥛', price:12, category:'甜品', desc:'奶香浓郁，红豆绵密' },
+  { _id:'d7',  name:'蜂蜜柚子茶', emoji:'🍯', price:10, category:'饮品', desc:'清新润喉，暖暖的' },
+  { _id:'d8',  name:'珍珠奶茶', emoji:'🧋', price:12, category:'饮品', desc:'波霸多多，快乐加倍' },
+  { _id:'d9',  name:'热巧克力', emoji:'☕', price:14, category:'饮品', desc:'浓郁丝滑，治愈系' },
+  { _id:'d10', name:'香辣烤串', emoji:'🍢', price:20, category:'夜宵', desc:'滋滋冒油，小心烫嘴' },
+  { _id:'d11', name:'蒜蓉小龙虾', emoji:'🦞', price:45, category:'夜宵', desc:'红彤彤的一大盘' },
+  { _id:'d12', name:'黄金炸鸡', emoji:'🍗', price:25, category:'夜宵', desc:'外酥里嫩，一口爆汁' }
 ]
-
+const CAT_ICONS = { '全部':'🍽️', '主食':'🍚', '甜品':'🍰', '饮品':'🧋', '夜宵':'🌙' }
 const MOODS = [
-  { emoji: '😄', label: '开心' },
-  { emoji: '😌', label: '平静' },
-  { emoji: '🥰', label: '想你' },
-  { emoji: '😢', label: '难过' },
-  { emoji: '😠', label: '生气' },
-  { emoji: '😴', label: '疲惫' }
+  { emoji:'😄', label:'开心' }, { emoji:'😌', label:'平静' }, { emoji:'🥰', label:'想你' },
+  { emoji:'😢', label:'难过' }, { emoji:'😠', label:'生气' }, { emoji:'😴', label:'疲惫' }
 ]
+const STATUS = {
+  pending:   { text:'⏳ 待接单', color:'#FF9F0A', bg:'rgba(255,159,10,0.22)' },
+  cooking:   { text:'🍳 制作中', color:'#0A84FF', bg:'rgba(10,132,255,0.22)' },
+  done:      { text:'✅ 已完成', color:'#30D158', bg:'rgba(48,209,88,0.20)' },
+  cancelled: { text:'🚫 已取消', color:'#A1A1AA', bg:'rgba(161,161,170,0.22)' }
+}
 
-let currentOrder = {}   // id -> { dish, count }
+let cart = {}
 let activeCat = '全部'
 let wishlist = []
-let orders = []
-let moods = []
-let companions = []
+let orders = [
+  { _id:'o1', orderNo:'K8X2QM', status:'pending', items:[{emoji:'🍜',name:'番茄炒蛋面',count:1},{emoji:'🧋',name:'珍珠奶茶',count:2}], remark:'少放辣', total:42, createdAt: Date.now()-1800000 },
+  { _id:'o2', orderNo:'M3T9PL', status:'cooking', items:[{emoji:'🍗',name:'可乐鸡翅饭',count:1},{emoji:'🍰',name:'草莓小蛋糕',count:1}], remark:'', total:37, createdAt: Date.now()-86400000*2 }
+]
+let moods = [
+  { emoji:'🥰', label:'想你', ts: Date.now()-3600000 },
+  { emoji:'😄', label:'开心', ts: Date.now()-86400000*3 }
+]
+let companions = [
+  { emoji:'💗', label:'想你了', ts: Date.now()-7200000 },
+  { emoji:'☀️', label:'早安', ts: Date.now()-86400000 }
+]
+let tabSelected = 0
+let seq = 0
 
 const $ = id => document.getElementById(id)
 
+/* ===== 通用 ===== */
 function toast(msg) {
   const t = $('toast'); t.textContent = msg; t.classList.remove('show'); void t.offsetWidth; t.classList.add('show')
 }
+function pad(n){ return n<10?'0'+n:''+n }
+function fmtTime(ts){
+  if (Date.now()-ts < 60000) return '刚刚'
+  const d = new Date(ts)
+  return `${d.getMonth()+1}月${d.getDate()}日 ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+function dayTag(ts){
+  const d=new Date(ts), now=new Date()
+  const s=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime()
+  const t=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime()
+  const diff=(s-t)/86400000
+  return diff===0?'今天':diff===1?'昨天':'更早'
+}
+function greeting(){
+  const h=new Date().getHours()
+  if(h<5)return'夜深了'; if(h<9)return'早上好'; if(h<12)return'上午好'
+  if(h<14)return'中午好'; if(h<18)return'下午好'; return'晚上好'
+}
 
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+/* ===== 页面切换 ===== */
+const TAB_PAGES = ['page-index','page-mood','page-companion']
+function showPage(name, viaTab){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
   $(name).classList.add('active')
-  document.querySelectorAll('.nav-item').forEach(t => t.classList.toggle('on', t.dataset.p === name))
-  if (name === 'page-orders') renderOrders()
-  if (name === 'page-mood') renderMoods()
-  if (name === 'page-companion') renderCompanion()
-  if (name === 'page-wishlist') renderWish()
-  refreshNavBadge()
-  refreshSettleBar()
+  if (TAB_PAGES.includes(name)){
+    const i = TAB_PAGES.indexOf(name)
+    setTab(i)
+    $('settleBar').style.display = (name==='page-index' && cartCount()>0) ? 'flex' : 'none'
+  } else {
+    $('settleBar').style.display = 'none'
+  }
+  if(name==='page-orders') renderOrders()
+  if(name==='page-mood') renderMoods()
+  if(name==='page-companion') renderCompanion()
+  if(name==='page-wishlist') renderWish()
+  if(name==='page-admin') renderAdmin()
 }
+function goPage(name){ showPage(name) }
+function goBack(){ showPage('page-index') }
 
-function renderChips() {
-  const cats = ['全部', ...new Set(DISHES.map(d => d.category))]
-  $('chipWrap').innerHTML = cats.map(c => `<div class="chip ${c === activeCat ? 'on' : ''}" onclick="setCat('${c}')">${c}</div>`).join('')
+/* tabbar 胶囊滑动 */
+function setTab(i){
+  tabSelected = i
+  document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('on', idx===i))
+  updateCap()
 }
-function setCat(c) { activeCat = c; renderChips(); renderDishes() }
+function updateCap(){
+  const n=3, w=(366-16)/n, left=8+i*0
+  const cap=$('tabCap')
+  const slot=(366)/n
+  const x=8+i*slot
+  cap.style.width=(slot-16)+'px'
+  cap.style.transform=`translateX(${x}px) translateY(-50%) scale(1.03)`
+}
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{ showPage(t.dataset.page) })
+})
 
-function renderDishes() {
-  const list = activeCat === '全部' ? DISHES : DISHES.filter(d => d.category === activeCat)
-  $('dishList').innerHTML = list.length ? list.map(d => `
-    <div class="dish" onclick="addToOrder(${d.id}, event)">
-      <div class="dish-emoji">${d.emoji}</div>
-      <div class="dish-info">
-        <div class="dish-name">${d.name}</div>
-        <div class="dish-desc">${d.desc}</div>
-        <div class="dish-bottom"><span class="dish-price">¥${d.price}</span><span class="add-btn">＋</span></div>
+/* ===== 菜单 ===== */
+function renderSegment(){
+  const cats=['全部',...new Set(DISHES.map(d=>d.category))]
+  $('segment').innerHTML=cats.map((c,idx)=>`
+    <div class="seg ${c===activeCat?'on':''}" onclick="setCat('${c}')">
+      <div class="seg-ico">${CAT_ICONS[c]||'🍽️'}</div><span>${c}</span>
+    </div>`).join('')
+}
+function setCat(c){ activeCat=c; renderSegment(); renderDishes(true) }
+function renderDishes(anim){
+  const list = activeCat==='全部'?DISHES:DISHES.filter(d=>d.category===activeCat)
+  const g=$('dishList')
+  g.classList.remove('enter')
+  g.innerHTML = list.map((d,idx)=>`
+    <div class="grow" style="animation-delay:${idx*35}ms" onclick="addToCart('${d._id}',event,${idx})">
+      <div class="grow-emoji t${idx%6}">${d.emoji}</div>
+      <div class="grow-info">
+        <div class="grow-name">${d.name}</div>
+        <div class="grow-desc">${d.desc}</div>
       </div>
-    </div>`).join('') : '<div class="empty"><div class="e">🍽️</div>这个分类还没有菜</div>'
+      <div class="grow-right">
+        <div class="grow-price">¥${d.price}</div>
+        <div id="add-${idx}" class="add-btn">＋</div>
+      </div>
+    </div>`).join('')
+  if(anim){ void g.offsetWidth; g.classList.add('enter') }
+  $('menuSub').textContent = `共 ${DISHES.length} 道 · 今天也慢慢吃`
+}
+function cartCount(){ return Object.values(cart).reduce((s,i)=>s+i.count,0) }
+function cartTotal(){ return Object.values(cart).reduce((s,i)=>s+i.count*i.dish.price,0) }
+function cartList(){ return Object.values(cart) }
+function refreshBadge(bounce){
+  const n=cartCount()
+  const b=$('entryBadge')
+  b.textContent=n; b.classList.toggle('show', n>0)
+  if(bounce){ b.classList.remove('bounce'); void b.offsetWidth; b.classList.add('bounce') }
+}
+function addToCart(id, ev, idx){
+  const dish=DISHES.find(d=>d._id===id)
+  if(cart[id]) cart[id].count++; else cart[id]={dish,count:1}
+  refreshBadge(true); refreshSettleBar()
+  if(ev) flyToCart(idx, ev)
+  toast('已加入购物车 🍽️')
+}
+function flyToCart(idx, ev){
+  const from=$('add-'+idx)
+  const to=$('settleBar')
+  if(!from) return
+  const fr=from.getBoundingClientRect(), tr=to.getBoundingClientRect()
+  const sx=fr.left+fr.width/2, sy=fr.top+fr.height/2
+  const ex=tr.left+50, ey=tr.top+tr.height/2
+  const ball=document.createElement('div'); ball.className='fly-ball'
+  ball.style.left=sx+'px'; ball.style.top=sy+'px'
+  ball.innerHTML='<div class="fly-node">♥</div>'
+  document.body.appendChild(ball)
+  ball.style.setProperty('--dx',(ex-sx)+'px')
+  ball.style.setProperty('--dy',(ey-sy)+'px')
+  requestAnimationFrame(()=>requestAnimationFrame(()=>ball.classList.add('flying')))
+  setTimeout(()=>ball.remove(),700)
+}
+function refreshSettleBar(){
+  const n=cartCount()
+  $('settleBar').style.display = (n>0 && $('page-index').classList.contains('active')) ? 'flex':'none'
+  $('sbCount').textContent='共 '+n+' 道'
+  $('sbTotal').textContent='¥'+cartTotal()
 }
 
-function orderCount() { return Object.values(currentOrder).reduce((s, i) => s + i.count, 0) }
-function orderTotal() { return Object.values(currentOrder).reduce((s, i) => s + i.count * i.dish.price, 0) }
-function orderList() { return Object.values(currentOrder) }
-
-function refreshNavBadge() {
-  const n = orderCount()
-  $('entryBadge').textContent = n
-  $('entryBadge').classList.toggle('show', n > 0)
+/* ===== 支付抽屉 ===== */
+function openPay(){
+  if(!cartCount()){ toast('订单是空的'); return }
+  $('payList').innerHTML=cartList().map(i=>`<div class="line"><span>${i.dish.emoji} ${i.dish.name} ×${i.count}</span><span>¥${i.dish.price*i.count}</span></div>`).join('')
+  $('payTotal').textContent='¥'+cartTotal()
+  $('payMask').classList.add('show')
 }
-
-function bounceBadge() {
-  const b = $('entryBadge')
-  b.classList.remove('bounce'); void b.offsetWidth; b.classList.add('bounce')
-}
-
-// 点菜 → 飞入订单
-function addToOrder(id, ev) {
-  const dish = DISHES.find(d => d.id === id)
-  if (currentOrder[id]) currentOrder[id].count++; else currentOrder[id] = { dish, count: 1 }
-  refreshNavBadge(); bounceBadge(); refreshSettleBar()
-  if (ev) flyToOrder(dish.emoji, ev.clientX, ev.clientY)
-  toast('已加进订单 🍽️')
-}
-
-function flyToOrder(emoji, fromX, fromY) {
-  const target = document.getElementById('settleBar')
-  const r = target.getBoundingClientRect()
-  const tx = r.left + r.width / 2
-  const ty = r.top + r.height / 2 - 20
-
-  const outer = document.createElement('div')
-  outer.className = 'fly-outer'
-  outer.style.left = (fromX - 15) + 'px'
-  outer.style.top = (fromY - 15) + 'px'
-  const inner = document.createElement('div')
-  inner.className = 'fly-inner'
-  inner.textContent = emoji
-  outer.appendChild(inner)
-  document.body.appendChild(outer)
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      outer.style.transform = `translateX(${tx - fromX + 15}px)`
-      inner.style.transform = `translateY(${ty - fromY + 15}px) scale(0.35)`
-      inner.style.opacity = '0.4'
-    })
+function closePay(){ $('payMask').classList.remove('show') }
+function confirmPay(){
+  if(!cartCount()){ toast('订单是空的'); return }
+  const remark=$('payRemark').value
+  orders.unshift({
+    _id:'o'+Date.now(), orderNo:'D'+Date.now().toString(36).toUpperCase().slice(-6),
+    status:'pending', items:cartList().map(i=>({emoji:i.dish.emoji,name:i.dish.name,count:i.count})),
+    remark, total:cartTotal(), createdAt:Date.now()
   })
-  setTimeout(() => outer.remove(), 900)
+  cart={}; $('payRemark').value=''
+  closePay(); refreshBadge(); refreshSettleBar()
+  toast('下单成功！等宝贝接单吧 💕')
 }
 
-function renderOrders() {
-  const list = orderList()
-  const hasCurrent = list.length > 0
+/* ===== 订单 ===== */
+function renderOrders(){
+  const cl=cartList(), hasCurrent=cl.length>0
   $('currentOrderWrap').innerHTML = hasCurrent ? `
     <div class="card">
-      <div class="sec-title">今晚这单 🍽️</div>
-      ${list.map(i => `
+      <div class="sec-title">今晚这单</div>
+      ${cl.map(i=>`
         <div class="oi-item">
           <div class="oi-emoji">${i.dish.emoji}</div>
           <div class="oi-info"><div class="oi-name">${i.dish.name}</div><div class="oi-price">¥${i.dish.price}</div></div>
           <div class="stepper">
-            <div class="step-btn" onclick="decOrder(${i.dish.id})">−</div>
+            <div class="step-btn" onclick="decOrder('${i.dish._id}')">−</div>
             <div class="step-num">${i.count}</div>
-            <div class="step-btn add" onclick="incOrder(${i.dish.id})">＋</div>
+            <div class="step-btn add" onclick="incOrder('${i.dish._id}')">＋</div>
           </div>
         </div>`).join('')}
       <div class="divider"></div>
-      <div class="line"><span>合计</span><span class="line-price big">¥${orderTotal()}</span></div>
-      <textarea class="remark" id="remark" maxlength="60" placeholder="附言：少放辣、多加点香菜…"></textarea>
-      <div class="btn-main" style="margin-top:12px" onclick="submitOrder()">下单 💌</div>
+      <div class="line"><span>合计</span><span class="line-price big">¥${cartTotal()}</span></div>
+      <textarea class="remark" id="orderRemark" maxlength="60" placeholder="附言：少放辣、多加点香菜…" style="background:rgba(0,0,0,0.04);color:#1C1C1E"></textarea>
+      <div class="btn-main" style="margin-top:10px" onclick="submitOrder()">去下单</div>
     </div>` : ''
-
-  $('orderList').innerHTML = orders.length ? orders.map((o, idx) => {
-    const st = STATUS[o.status]
-    const acts = o.status === 'pending' ? `<div class="action-btn ghost" onclick="cancelOrder(${idx})">取消</div>`
-      : o.status === 'cooking' ? `<div class="action-btn" onclick="pokeOrder(${idx})">催单 💗</div>` : ''
-    return `<div class="order-card">
-      <div class="order-head"><span class="order-no">单号 ${o.no}</span><span class="tag" style="color:${st.color};background:${st.bg}">${st.text}</span></div>
-      <div class="order-items">${o.summary}</div>
-      ${o.remark ? `<div class="order-remark">💬 ${o.remark}</div>` : ''}
-      <div class="order-foot"><span class="order-time">${o.time}</span><span class="order-total">¥${o.total}</span></div>
-      ${acts ? `<div class="order-actions">${acts}</div>` : ''}
-    </div>`
-  }).join('') : (hasCurrent ? '' : '<div class="empty"><div class="e">📭</div>还没有订单，去菜单点几道吧</div>')
-
-  $('ordersSub').textContent = hasCurrent ? `已点 ${orderCount()} 道，还没下单` : (orders.length ? `${orders.length} 条历史订单` : '点餐记录都在这里')
+  const sub = hasCurrent ? `已点 ${cartCount()} 道，还没下单` : (orders.length ? `${orders.length} 条历史订单` : '点餐记录都在这里')
+  $('ordersSub').textContent = sub
+  $('histTitle').style.display = orders.length ? 'block' : 'none'
+  $('orderList').innerHTML = orders.map((o,idx)=>orderCard(o,idx,'user')).join('')
+  $('ordersEmpty').style.display = (!hasCurrent && !orders.length) ? 'block' : 'none'
 }
-
-function incOrder(id) { currentOrder[id].count++; renderOrders(); refreshNavBadge() }
-function decOrder(id) { if (--currentOrder[id].count <= 0) delete currentOrder[id]; renderOrders(); refreshNavBadge() }
-
-function submitOrder() {
-  if (!orderCount()) { toast('订单是空的'); return }
-  const remark = ($('remark') || {}).value || ''
+function incOrder(id){ cart[id].count++; renderOrders(); refreshBadge(); refreshSettleBar() }
+function decOrder(id){ if(--cart[id].count<=0) delete cart[id]; renderOrders(); refreshBadge(); refreshSettleBar() }
+function submitOrder(){
+  if(!cartCount()){ toast('订单是空的'); return }
+  const remark=($('orderRemark')||{}).value||''
   orders.unshift({
-    no: 'D' + Date.now().toString(36).toUpperCase().slice(-6),
-    summary: orderList().map(i => i.dish.name).join('、').slice(0, 30),
-    remark, total: orderTotal(), status: 'pending', time: '刚刚'
+    _id:'o'+Date.now(), orderNo:'D'+Date.now().toString(36).toUpperCase().slice(-6),
+    status:'pending', items:cartList().map(i=>({emoji:i.dish.emoji,name:i.dish.name,count:i.count})),
+    remark, total:cartTotal(), createdAt:Date.now()
   })
-  currentOrder = {}
-  renderOrders(); refreshNavBadge(); refreshSettleBar()
-  toast('下单成功！等接单吧 💕')
+  cart={}; renderOrders(); refreshBadge(); refreshSettleBar()
+  toast('下单成功！等宝贝接单吧 💕')
 }
-
-// 一键下单（支付）
-function refreshSettleBar() {
-  const n = orderCount()
-  const bar = $('settleBar')
-  const visible = n > 0 && $('page-index').classList.contains('active')
-  bar.style.display = visible ? 'flex' : 'none'
-  $('sbCount').textContent = '共 ' + n + ' 道'
-  $('sbTotal').textContent = '¥' + orderTotal()
+function orderCard(o, idx, role){
+  const st=STATUS[o.status]||{text:'❓',color:'#8A817A',bg:'#F0EAE2'}
+  const names=o.items.map(i=>`${i.emoji}${i.name}×${i.count}`)
+  const summary=names.length>3?names.slice(0,3).join('、')+` 等${names.length}件`:names.join('、')
+  let acts=''
+  if(role==='user'){
+    if(o.status==='pending') acts=`<div class="action-btn ghost" onclick="cancelOrder('${o._id}')">取消</div>`
+    else if(o.status==='cooking') acts=`<div class="action-btn" onclick="pokeOrder('${o._id}')">催单 💗</div>`
+  } else {
+    if(o.status==='pending') acts=`<div class="action-btn done-btn" onclick="adminDone('${o._id}')">接单 ✅</div>`
+    else if(o.status==='cooking') acts=`<div class="action-btn done-btn" onclick="adminDone('${o._id}')">完成 ✅</div>`
+  }
+  return `
+  <div class="card order-card">
+    <div class="order-head"><span class="order-no">单号 ${o.orderNo}</span><span class="tag" style="color:${st.color};background:${st.bg}">${st.text}</span></div>
+    <div class="order-items">${summary}</div>
+    ${o.remark?`<div class="order-remark">💬 ${o.remark}</div>`:''}
+    <div class="order-foot"><span class="order-time">${fmtTime(o.createdAt)}</span><span class="order-total">¥${o.total}</span></div>
+    ${acts?`<div class="order-actions">${acts}</div>`:''}
+  </div>`
 }
+function cancelOrder(id){ const o=orders.find(x=>x._id===id); if(o){o.status='cancelled'; renderOrders(); toast('订单已取消')} }
+function pokeOrder(id){ const o=orders.find(x=>x._id===id); if(o){o.status='cooking'; renderOrders(); toast('已经催宝贝啦 💗')} }
 
-function openPay() {
-  if (!orderCount()) { toast('订单是空的'); return }
-  const list = orderList()
-  $('payList').innerHTML = list.map(i => `<div class="line"><span>${i.dish.emoji} ${i.dish.name} ×${i.count}</span><span>¥${i.dish.price * i.count}</span></div>`).join('')
-  $('payTotal').textContent = '¥' + orderTotal()
-  $('payMask').classList.add('show')
-}
-
-function closePay() { $('payMask').classList.remove('show') }
-
-function confirmPay() {
-  const remark = ($('payRemark') || {}).value || ''
-  orders.unshift({
-    no: 'D' + Date.now().toString(36).toUpperCase().slice(-6),
-    summary: orderList().map(i => i.dish.name).join('、').slice(0, 30),
-    remark, total: orderTotal(), status: 'pending', time: '刚刚'
-  })
-  currentOrder = {}
-  $('payRemark').value = ''
-  closePay()
-  renderOrders(); refreshNavBadge(); refreshSettleBar()
-  toast('支付成功！等接单吧 💕')
-}
-
-const STATUS = {
-  pending:   { text: '待接单', color: '#F5A623', bg: '#FCF1DC' },
-  cooking:   { text: '制作中', color: '#E8614F', bg: '#FCE9E3' },
-  done:      { text: '已完成', color: '#4CAF50', bg: '#E7F4E8' },
-  cancelled: { text: '已取消', color: '#8A817A', bg: '#F0EAE2' }
-}
-
-function cancelOrder(idx) { orders[idx].status = 'cancelled'; renderOrders(); toast('订单已取消') }
-function pokeOrder(idx) { orders[idx].status = 'cooking'; renderOrders(); toast('已经催单啦 💗') }
-
-// 心情
-function renderMoods() {
-  $('moodGrid').innerHTML = MOODS.map(m => `
+/* ===== 心情 ===== */
+function renderMoods(){
+  $('moodGrid').innerHTML=MOODS.map(m=>`
     <div class="mood" onclick="addMood('${m.emoji}','${m.label}')">
       <div class="mo">${m.emoji}</div><div class="ml">${m.label}</div>
     </div>`).join('')
-  $('moodList').innerHTML = moods.length ? moods.map(m => `
+  $('moodEmpty').style.display = moods.length?'none':'block'
+  $('moodList').innerHTML=moods.map(m=>`
     <div class="mood-item">
       <div class="mo">${m.emoji}</div>
-      <div class="mi-info"><div class="mi-label">${m.label}</div><div class="mi-time">${m.time}</div></div>
-    </div>`).join('') : '<div class="empty"><div class="e">💛</div>还没有记录，点一个心情吧</div>'
+      <div class="mi-info"><div class="mi-label">${m.label}</div><div class="mi-time">${fmtTime(m.ts)}</div></div>
+      <div class="day-tag">${dayTag(m.ts)}</div>
+    </div>`).join('')
+  renderSummary()
+}
+function renderSummary(){
+  if(!moods.length){ $('summaryWrap').innerHTML=''; return }
+  const week=moods.filter(r=>r.ts>=Date.now()-86400000*7)
+  if(!week.length){ $('summaryWrap').innerHTML=''; return }
+  const freq={}; week.forEach(r=>freq[r.label]=(freq[r.label]||0)+1)
+  let top='',n=0; for(const k in freq) if(freq[k]>n){n=freq[k];top=k}
+  const miss=week.filter(r=>r.label==='想你').length
+  $('summaryWrap').innerHTML=`<div class="summary-card">
+    <div class="sum-t">本周心情小结 💗</div>
+    <div class="sum-d">这周你记了 <span class="sum-b">${week.length}</span> 次，<span class="sum-b">${top}</span> 出现最多。${miss?`有 <span class="sum-b">${miss}</span> 个晚上是「想你」收尾的。`:''}</div>
+  </div>`
+}
+function addMood(emoji,label){
+  moods.unshift({emoji,label,ts:Date.now()})
+  renderMoods(); toast('已记录 '+emoji)
+  burstParticle(emoji)
+}
+function burstParticle(emoji){
+  const layer=document.createElement('div')
+  layer.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:300'
+  $('screen').appendChild(layer)
+  const p=document.createElement('div')
+  p.className='particle-anim'
+  p.textContent=emoji
+  p.style.cssText=`left:${100+Math.random()*200}px;top:${250+Math.random()*150}px;font-size:${70+Math.random()*30}px;--dx:${(Math.random()-0.5)*240}px;--dy:${-(120+Math.random()*160)}px;--rot:${(Math.random()-0.5)*360}deg;--dur:${(1+Math.random()*0.6).toFixed(2)}s`
+  layer.appendChild(p)
+  setTimeout(()=>layer.remove(),1800)
 }
 
-function addMood(emoji, label) {
-  moods.unshift({ emoji, label, time: '刚刚' })
-  renderMoods(); toast('已记录 ' + emoji)
-}
-
-// 陪伴
-function renderCompanion() {
-  $('companionList').innerHTML = companions.length ? companions.map(c => `
+/* ===== 陪伴 ===== */
+function renderCompanion(){
+  $('companionEmpty').style.display = companions.length?'none':'block'
+  $('companionList').innerHTML=companions.map(c=>`
     <div class="mood-item">
       <div class="mo">${c.emoji}</div>
-      <div class="mi-info"><div class="mi-label">${c.label}</div><div class="mi-time">${c.time}</div></div>
-    </div>`).join('') : '<div class="empty"><div class="e">🫂</div>今天还没有互动，点一下上面的大按钮吧</div>'
+      <div class="mi-info"><div class="mi-label">${c.label}</div><div class="mi-time">${fmtTime(c.ts)}</div></div>
+      <div class="day-tag">${dayTag(c.ts)}</div>
+    </div>`).join('')
 }
-
-function burstHearts(x, y) {
-  const hearts = ['💗','❤️','💕','💖','💓','🩷','💘','💝']
-  for (let i = 0; i < 16; i++) {
-    const h = document.createElement('div')
-    h.className = 'heart'
-    h.textContent = hearts[Math.floor(Math.random() * hearts.length)]
-    h.style.fontSize = (14 + Math.random() * 26) + 'px'
-    h.style.left = x + 'px'
-    h.style.top = y + 'px'
-    h.style.transitionDuration = (0.8 + Math.random() * 0.5) + 's'
-    document.body.appendChild(h)
-    const angle = (Math.random() - 0.5) * Math.PI
-    const dist = 70 + Math.random() * 170
-    const dx = Math.sin(angle) * dist
-    const dy = -(50 + Math.random() * 160)
-    const rot = (Math.random() - 0.5) * 140
-    const sc = 0.4 + Math.random() * 0.9
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        h.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(${sc})`
-        h.style.opacity = '0'
-      })
-    })
-    setTimeout(() => h.remove(), 1400)
+function addCompanion(emoji,label,burst){
+  companions.unshift({emoji,label,ts:Date.now()})
+  renderCompanion(); toast(label+' '+emoji)
+  if(burst) burstHearts()
+}
+function burstHearts(){
+  const pool=['💗','❤️','💕','💖','💓','🩷','💘','💝']
+  const layer=document.createElement('div')
+  layer.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:300'
+  $('screen').appendChild(layer)
+  for(let i=0;i<10;i++){
+    const h=document.createElement('div')
+    h.className='heart-anim'
+    h.textContent=pool[Math.floor(Math.random()*pool.length)]
+    const ang=(i/9-0.5)*1.4
+    const dist=120+Math.random()*90
+    h.style.cssText=`left:${170+Math.random()*50}px;top:${300+Math.random()*40}px;font-size:${18+Math.random()*14}px;--dx:${Math.round(Math.sin(ang)*dist)}px;--dy:${Math.round(-Math.cos(ang)*dist)}px;--rot:${Math.round((Math.random()-0.5)*60)}deg;--dur:${(1+Math.random()*0.4).toFixed(2)}s`
+    layer.appendChild(h)
   }
-  const big = document.createElement('div')
-  big.className = 'heart-big'
-  big.textContent = '💗'
-  big.style.left = x + 'px'
-  big.style.top = y + 'px'
-  document.body.appendChild(big)
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      big.style.transform = 'translate(-50%, -50%) scale(2.2)'
-      big.style.opacity = '0'
-    })
-  })
-  setTimeout(() => big.remove(), 800)
+  setTimeout(()=>layer.remove(),1500)
 }
 
-function addCompanion(emoji, label, ev) {
-  companions.unshift({ emoji, label, time: '刚刚' })
-  renderCompanion()
-  if (ev) burstHearts(ev.clientX, ev.clientY)
-  toast(label + ' ' + emoji)
-}
-
-// 心愿单
-function renderWish() {
-  $('wishList').innerHTML = wishlist.length ? wishlist.map((w, i) => `
-    <div class="wish-item">
+/* ===== 心愿单 ===== */
+function renderWish(){
+  $('wishEmpty').style.display = wishlist.length?'none':'block'
+  const t=$('wishTitle'); t.style.display=wishlist.length?'block':'none'
+  if(wishlist.length) t.textContent=`心愿 ${wishlist.length} 个`
+  $('wishList').innerHTML=wishlist.map((w,i)=>`
+    <div class="card wish-item">
       <div>
-        <div class="wish-content ${w.done ? 'done' : ''}">${w.done ? '✨' : '🌟'} ${w.content}</div>
-        <div class="wish-meta"><span>${w.time}</span><span class="wish-status ${w.done ? 'done' : ''}">${w.done ? '已实现' : '想吃中'}</span></div>
+        <div class="wish-content ${w.done?'done':''}">${w.done?'✨':'🌟'} ${w.content}</div>
+        <div class="wish-meta"><span>${w.time}</span><span class="wish-status ${w.done?'done':''}">${w.done?'已实现':'想吃中'}</span></div>
       </div>
-      <span class="wish-del" onclick="delWish(${i})">✕</span>
-    </div>`).join('') : '<div class="empty"><div class="e">🌙</div>还没有心愿，写下第一个吧</div>'
+      <div class="wish-ops">
+        ${!w.done?`<div class="wish-grant" onclick="grantWish(${i})">实现</div>`:''}
+        <span class="wish-del" onclick="delWish(${i})">✕</span>
+      </div>
+    </div>`).join('')
+}
+function addWish(){
+  const v=$('wishInput').value.trim()
+  if(!v){ toast('写下你的小愿望吧'); return }
+  wishlist.unshift({content:v,done:false,time:'刚刚'})
+  $('wishInput').value=''; renderWish(); toast('已记下 ✨')
+}
+function grantWish(i){ wishlist[i].done=true; renderWish(); toast('愿望已实现 ✨') }
+function delWish(i){ wishlist.splice(i,1); renderWish() }
+
+/* ===== 管家 ===== */
+function renderAdmin(){
+  const pending=orders.filter(o=>o.status==='pending'||o.status==='cooking')
+  $('adminEmpty').style.display = pending.length?'none':'block'
+  $('adminList').innerHTML=pending.map((o,idx)=>orderCard(o,idx,'admin')).join('')
+}
+function adminDone(id){
+  const o=orders.find(x=>x._id===id)
+  if(o){ o.status = o.status==='pending' ? 'cooking' : 'done'; renderAdmin(); renderOrders(); toast(o.status==='done'?'订单已完成 ✅':'已接单，开始做 🍳') }
 }
 
-function addWish() {
-  const v = $('wishInput').value.trim()
-  if (!v) { toast('写下你的小愿望吧'); return }
-  wishlist.unshift({ content: v, done: false, time: '刚刚' })
-  $('wishInput').value = ''; renderWish(); toast('已记下 ✨')
-}
-function delWish(i) { wishlist.splice(i, 1); renderWish() }
+/* ===== 事件绑定 ===== */
+$('missBtn').addEventListener('click', ()=>addCompanion('💗','想你了',true))
+$('morningBtn').addEventListener('click', ()=>addCompanion('☀️','早安',false))
+$('nightBtn').addEventListener('click', ()=>addCompanion('🌙','晚安',false))
+$('wishInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addWish() })
 
-// 绑定陪伴按钮
-$('missBtn').addEventListener('click', (e) => addCompanion('💗', '想你了', e))
-$('morningBtn').addEventListener('click', (e) => addCompanion('☀️', '早安', e))
-$('nightBtn').addEventListener('click', (e) => addCompanion('🌙', '晚安', e))
-
-renderChips(); renderDishes(); renderOrders(); renderMoods(); renderCompanion(); renderWish(); refreshNavBadge(); refreshSettleBar()
+/* ===== 启动 ===== */
+$('greet').textContent = greeting()+'，MengYu'
+renderSegment(); renderDishes(true); renderOrders(); renderMoods(); renderCompanion(); renderWish(); renderAdmin(); refreshBadge(); refreshSettleBar(); updateCap()
 </script>
 </body>
 </html>
