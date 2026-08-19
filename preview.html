@@ -380,35 +380,23 @@
   .toast.show { display:block; animation: pop 1.5s forwards; }
   @keyframes pop { 0%{opacity:0;} 12%{opacity:1;} 80%{opacity:1;} 100%{opacity:0;} }
 
-  /* 底部玻璃胶囊 tabbar */
+  /* 底部导航栏（简约） */
   .tabbar {
     position:absolute; left:0; right:0; bottom:0; z-index:80;
-    margin:0 12px 12px; height:60px;
-    background: rgba(255,255,255,0.60);
-    backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);
-    border:1px solid rgba(255,255,255,0.9); border-radius:999px;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 1px 3px rgba(255,255,255,0.7),
-      0 16px 44px rgba(0,0,0,0.10), 0 0 24px rgba(10,132,255,0.16);
-    display:flex; align-items:center; overflow:hidden;
+    height:56px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display:flex; align-items:center;
   }
   .tab {
     flex:1; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    cursor:pointer; position:relative; z-index:2; gap:2px;
-    transition: transform .15s cubic-bezier(.23,1,.32,1);
+    cursor:pointer; gap:3px; padding-bottom:4px;
   }
-  .tab .ico { font-size:20px; line-height:1; opacity:.55; transition: opacity .2s, transform .2s; }
+  .tab .ico { font-size:21px; line-height:1; opacity:.45; transition: opacity .2s, transform .2s; }
   .tab .lbl { font-size:10px; color:var(--label-2); transition: color .2s; }
-  .tab.on .ico { opacity:1; transform:scale(1.15); }
+  .tab.on .ico { opacity:1; transform:translateY(-1px); }
   .tab.on .lbl { color:var(--accent); font-weight:600; }
-  .tab.pressing .ico { transform:scale(1.3); }
-  .tab-cap {
-    position:absolute; left:0; top:50%; z-index:1; height:46px; border-radius:999px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-    box-shadow: inset 0 1px 3px rgba(255,255,255,0.85), 0 4px 14px rgba(0,0,0,0.08), 0 0 18px rgba(10,132,255,0.30);
-    transition: transform .3s cubic-bezier(.23,1,.32,1);
-    will-change: transform;
-  }
-  .tabbar.dragging .tab-cap { transition: none; }
 </style>
 </head>
 <body>
@@ -526,7 +514,6 @@
 
       <!-- 底部 tabbar -->
       <div class="tabbar" id="tabbar">
-        <div class="tab-cap" id="tabCap"></div>
         <div class="tab on" data-i="0" data-page="page-index"><div class="ico">🍽️</div><div class="lbl">菜单</div></div>
         <div class="tab" data-i="1" data-page="page-mood"><div class="ico">💛</div><div class="lbl">心情</div></div>
         <div class="tab" data-i="2" data-page="page-companion"><div class="ico">🫂</div><div class="lbl">陪伴</div></div>
@@ -646,19 +633,10 @@ function showPage(name, viaTab){
 function goPage(name){ showPage(name) }
 function goBack(){ showPage('page-index') }
 
-/* tabbar 胶囊滑动 */
+/* tabbar 切换 */
 function setTab(i){
   tabSelected = i
   document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('on', idx===i))
-  updateCap()
-}
-function updateCap(){
-  const n=3, w=(366-16)/n, left=8+i*0
-  const cap=$('tabCap')
-  const slot=(366)/n
-  const x=8+i*slot
-  cap.style.width=(slot-16)+'px'
-  cap.style.transform=`translateX(${x}px) translateY(-50%) scale(1.03)`
 }
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click', ()=>{ showPage(t.dataset.page) })
@@ -937,7 +915,7 @@ $('wishInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addWish() })
 
 /* ===== 启动 ===== */
 $('greet').textContent = greeting()+'，MengYu'
-renderSegment(); renderDishes(true); renderOrders(); renderMoods(); renderCompanion(); renderWish(); renderAdmin(); refreshBadge(); refreshSettleBar(); updateCap()
+renderSegment(); renderDishes(true); renderOrders(); renderMoods(); renderCompanion(); renderWish(); renderAdmin(); refreshBadge(); refreshSettleBar()
 </script>
 </body>
 </html>
